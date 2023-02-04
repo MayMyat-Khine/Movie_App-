@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:movie_app_ui/resources/colors.dart';
 import 'package:movie_app_ui/resources/dimens.dart';
+import 'package:movie_app_ui/widgets/play_button_view.dart';
 
 class BannerView extends StatelessWidget {
   const BannerView({super.key});
@@ -28,21 +29,6 @@ class BannerView extends StatelessWidget {
   }
 }
 
-class PlayButtonView extends StatelessWidget {
-  const PlayButtonView({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Icon(
-      Icons.play_circle_fill,
-      size: BANNER_PLAY_BUTTON_SIZE,
-      color: PLAY_BUTTON_COLOR,
-    );
-  }
-}
-
 class GradientView extends StatelessWidget {
   const GradientView({
     Key? key,
@@ -55,7 +41,7 @@ class GradientView extends StatelessWidget {
           gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Colors.transparent, PRIMARY_BACKGROUND_COLOR])),
+              colors: [Colors.transparent, HOME_SCREEN_BACKGROUND_COLOR])),
     );
   }
 }
