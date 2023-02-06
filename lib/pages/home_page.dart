@@ -7,6 +7,7 @@ import 'package:movie_app_ui/views.dart/actors_view.dart';
 import 'package:movie_app_ui/views.dart/banner_view.dart';
 import 'package:movie_app_ui/views.dart/movie_view.dart';
 import 'package:movie_app_ui/views.dart/show_case_view.dart';
+import 'package:movie_app_ui/widgets/actors_and_creators_section_view.dart';
 import 'package:movie_app_ui/widgets/see_more_text.dart';
 import 'package:movie_app_ui/widgets/title_text.dart';
 import 'package:movie_app_ui/widgets/title_text_with_see_more_view.dart';
@@ -64,7 +65,8 @@ class HomePage extends StatelessWidget {
                 SizedBox(
                   height: MARGIN_LARGE,
                 ),
-                BestActorSectionView(),
+                ActorsAndCreatorsSectionView(
+                    BEST_ACTORS_TITLE, BEST_ACTORS_SEE_MORE),
                 SizedBox(
                   height: MARGIN_LARGE,
                 ),
@@ -88,8 +90,7 @@ class GenreSectionView extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
+          padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
           child: DefaultTabController(
             length: genreList.length,
             child: TabBar(
@@ -147,43 +148,6 @@ class CheckMovieShowTimeSectionView extends StatelessWidget {
         Icon(Icons.location_on_rounded,
             color: Colors.white, size: BANNER_PLAY_BUTTON_SIZE)
       ]),
-    );
-  }
-}
-
-class BestActorSectionView extends StatelessWidget {
-  const BestActorSectionView({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: PRIMARY_BACKGROUND_COLOR,
-      padding: EdgeInsets.only(top:MARGIN_MEDIUM_2,bottom:MARGIN_XXLARGE),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-            child:
-                TitleTextWithSeeMoreView(BEST_ACTORS_TITLE, BEST_ACTORS_SEE_MORE),
-          ),
-          SizedBox(
-            height: MARGIN_MEDIUM_2,
-          ),
-          Container(
-            height: BEST_ACTORS_HEIGHT,
-            child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.only(left: MARGIN_MEDIUM_2),
-                children: [
-                  ActorsView(),
-                  ActorsView(),
-                  ActorsView(),
-                ]),
-          ),
-        ],
-      ),
     );
   }
 }
