@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -10,7 +12,9 @@ import 'package:movie_app_ui/widgets/rating_view.dart';
 import 'package:movie_app_ui/widgets/title_text.dart';
 
 class MovieDetailPage extends StatelessWidget {
-  const MovieDetailPage({super.key});
+  MovieDetailPage({super.key});
+
+  final List<String> genreList = ["Actions", "Adventure", "Thriller"];
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +27,7 @@ class MovieDetailPage extends StatelessWidget {
               delegate: SliverChildListDelegate([
             Container(
               margin: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-              child: TrailerSection(),
+              child: TrailerSection(genreList),
             ),
             ActorsAndCreatorsSectionView(
               MOVIE_DETAILS_SCREEN_ACTORS_TITLE,
@@ -205,26 +209,155 @@ class MovieDetailYearView extends StatelessWidget {
 }
 
 class TrailerSection extends StatelessWidget {
-  const TrailerSection({super.key});
-
+  TrailerSection(this.genreList);
+  final List<String> genreList;
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      MovieTimeAndGenreView(genreList),
+      SizedBox(
+        height: MARGIN_MEDIUM_3,
+      ),
+      StorylineView(),
+      SizedBox(
+        height: MARGIN_MEDIUM_2,
+      ),
       Row(
         children: [
-          Icon(
-            Icons.access_time,
-            color: PLAY_BUTTON_COLOR,
-          ),
-          SizedBox(
-            width: MARGIN_SMALL,
-          ),
-          Text(
-            "2h 30min",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          )
+          MovieDetailScreenButtonView(
+              "PLAY TRAILER",
+              PLAY_BUTTON_COLOR,
+              Icon(
+                Icons.play_circle_filled,
+                color: Colors.black54,
+              )),
+          MovieDetailScreenButtonView(
+              "RATE MOVIE",
+              HOME_SCREEN_BACKGROUND_COLOR,
+              Icon(
+                Icons.star,
+                color: PLAY_BUTTON_COLOR,
+              )),
         ],
       )
     ]);
+  }
+}
+
+class GenreChipView extends StatelessWidget {
+  final String genreText;
+  GenreChipView(this.genreText);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Chip(
+            backgroundColor: MOVIE_DETAILS_SCREEN_CHIP_BACKGROUND_COLOR,
+            label: Text(
+              genreText,
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            )),
+        SizedBox(
+          width: MARGIN_SMALL,
+        )
+      ],
+    );
+  }
+}
+
+class MovieTimeAndGenreView extends StatelessWidget {
+  final List<String> genreList;
+  MovieTimeAndGenreView(this.genreList);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(
+          Icons.access_time,
+          color: PLAY_BUTTON_COLOR,
+        ),
+        SizedBox(
+          width: MARGIN_SMALL,
+        ),
+        Text(
+          "2h 30min",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(
+          width: MARGIN_MEDIUM,
+        ),
+        Row(
+          children: genreList.map((genre) => GenreChipView(genre)).toList(),
+        ),
+        Spacer(),
+        Icon(
+          Icons.favorite_border,
+          color: Colors.white,
+        )
+      ],
+    );
+  }
+}
+
+class StorylineView extends StatelessWidget {
+  const StorylineView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TitleText(MOVIE_DETAILS_STORYLINE_TITLE),
+        SizedBox(
+          height: MARGIN_MEDIUM,
+        ),
+        Text(
+          "On November 6, 1983 in Hawkins, Indiana, a scientist is attacked by an unseen creature at a U.S. government laboratory. 12-year-old Will Byers encounters the creature and mysteriously vanishes while cycling home from a Dungeons & Dragons session with his friends Mike Wheeler, Dustin Henderson and Lucas Sinclair",
+          style: TextStyle(color: Colors.white, fontSize: TEXT_REGULAR_2X),
+        )
+      ],
+    );
+  }
+}
+
+class MovieDetailScreenButtonView extends StatelessWidget {
+  final String title;
+  final Color backgroundColor;
+  final Icon buttonIcon;
+  final bool isGhoseButton;
+
+  MovieDetailScreenButtonView(this.title, this.backgroundColor, this.buttonIcon,
+      {this.isGhoseButton = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: MARGIN_CARD_MEDIUM_2),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(MARGIN_LARGE),
+        border: Border.all(color: Colors.white, width: 2),
+      ),
+      height: MARGIN_XXLARGE,
+      child: Center(
+          child: Row(
+        children: [
+          buttonIcon,
+          SizedBox(
+            width: MARGIN_MEDIUM,
+          ),
+          Text(
+            title,
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: TEXT_REGULAR_2X,
+                fontWeight: FontWeight.bold),
+          ),
+        ],
+      )),
+    );
   }
 }
