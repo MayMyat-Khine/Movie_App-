@@ -222,7 +222,8 @@ class TrailerSection extends StatelessWidget {
           Text(
             "2h 30min",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          )
+          ),
+          
         ],
       )
     ]);
