@@ -22,17 +22,30 @@ class MovieDetailPage extends StatelessWidget {
       body: Container(
         color: HOME_SCREEN_BACKGROUND_COLOR,
         child: CustomScrollView(slivers: [
-          MovieDetailsSliverAppBarView(),
+          MovieDetailsSliverAppBarView(() => Navigator.pop(context)),
           SliverList(
               delegate: SliverChildListDelegate([
             Container(
               margin: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
               child: TrailerSection(genreList),
             ),
+            SizedBox(
+              height: MARGIN_LARGE,
+            ),
             ActorsAndCreatorsSectionView(
               MOVIE_DETAILS_SCREEN_ACTORS_TITLE,
               "",
               seeMoreButtonVisibility: false,
+            ),
+            SizedBox(
+              height: MARGIN_LARGE,
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
+              child: AboutFilmSectionView(),
+            ),
+            SizedBox(
+              height: MARGIN_LARGE,
             ),
             ActorsAndCreatorsSectionView(MOVIE_DETAILS_SCREEN_CREATORS_TITLE,
                 MOVIE_DETAILS_SCREEN_CREATORS_SEE_MORE)
@@ -43,12 +56,50 @@ class MovieDetailPage extends StatelessWidget {
   }
 }
 
-class MovieDetailsSliverAppBarView extends StatelessWidget {
-  const MovieDetailsSliverAppBarView({super.key});
+class AboutFilmInfoView extends StatelessWidget {
+  final String label;
+  final String description;
+  AboutFilmInfoView(this.label, this.description);
 
   @override
   Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width / 4,
+          child: Text(
+            label,
+            style: TextStyle(
+                color: MOVIE_DETAIL_INFO_TEXT_COLOR,
+                fontSize: MARGIN_MEDIUM_2,
+                fontWeight: FontWeight.w600),
+          ),
+        ),
+        SizedBox(
+          width: MARGIN_CARD_MEDIUM_2,
+        ),
+        Expanded(
+          child: Text(
+            description,
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: MARGIN_MEDIUM_2,
+                fontWeight: FontWeight.w600),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class MovieDetailsSliverAppBarView extends StatelessWidget {
+  final Function onTapBack;
+  MovieDetailsSliverAppBarView(this.onTapBack);
+  @override
+  Widget build(BuildContext context) {
     return SliverAppBar(
+      automaticallyImplyLeading: false,
       backgroundColor: PRIMARY_BACKGROUND_COLOR,
       expandedHeight: MOVIE_DETAILS_SCREEN_SLIVER_APP_BAR_HEIGHT,
       flexibleSpace: FlexibleSpaceBar(
@@ -58,12 +109,12 @@ class MovieDetailsSliverAppBarView extends StatelessWidget {
             child: MovieDetailsAppBarImageView(),
           ),
           Positioned.fill(child: GradientView()),
-          const Align(
+          Align(
             alignment: Alignment.topLeft,
             child: Padding(
               padding:
                   EdgeInsets.only(top: MARGIN_XXLARGE, left: MARGIN_MEDIUM_2),
-              child: BackButtonView(),
+              child: BackButtonView(onTapBack),
             ),
           ),
           const Align(
@@ -102,19 +153,23 @@ class MovieDetailsAppBarImageView extends StatelessWidget {
 }
 
 class BackButtonView extends StatelessWidget {
-  const BackButtonView({super.key});
+  final Function onTapBack;
+  BackButtonView(this.onTapBack);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MARGIN_XLARGE,
-      height: MARGIN_XLARGE,
-      decoration:
-          const BoxDecoration(shape: BoxShape.circle, color: Colors.black54),
-      child: const Icon(
-        Icons.chevron_left,
-        color: Colors.white,
-        size: MARGIN_LARGE,
+    return GestureDetector(
+      onTap: (() => onTapBack()),
+      child: Container(
+        width: MARGIN_XLARGE,
+        height: MARGIN_XLARGE,
+        decoration:
+            const BoxDecoration(shape: BoxShape.circle, color: Colors.black54),
+        child: const Icon(
+          Icons.chevron_left,
+          color: Colors.white,
+          size: MARGIN_LARGE,
+        ),
       ),
     );
   }
@@ -225,24 +280,22 @@ class TrailerSection extends StatelessWidget {
       Row(
         children: [
           MovieDetailScreenButtonView(
-            "PLAY TRAILER",
-            PLAY_BUTTON_COLOR,
-            Icon(
-              Icons.play_circle_filled,
-              color: Colors.black54,
-            ),
-          ),
-          SizedBox(
-            width: MARGIN_MEDIUM,
-          ),
-          MovieDetailScreenButtonView(
-              "RATE MOVIE",
-              HOME_SCREEN_BACKGROUND_COLOR,
+              "PLAY TRAILER",
+              PLAY_BUTTON_COLOR,
               Icon(
-                Icons.star,
-                color: PLAY_BUTTON_COLOR,
-              ),
-              isGhoseButton: true),
+                Icons.play_circle_filled,
+                color: Colors.black54,
+              )),
+          SizedBox(width: MARGIN_CARD_MEDIUM_2),
+          MovieDetailScreenButtonView(
+            "RATE MOVIE",
+            HOME_SCREEN_BACKGROUND_COLOR,
+            Icon(
+              Icons.star,
+              color: PLAY_BUTTON_COLOR,
+            ),
+            isGhostButton: true,
+          ),
         ],
       )
     ]);
@@ -332,10 +385,10 @@ class MovieDetailScreenButtonView extends StatelessWidget {
   final String title;
   final Color backgroundColor;
   final Icon buttonIcon;
-  final bool isGhoseButton;
+  final bool isGhostButton;
 
   MovieDetailScreenButtonView(this.title, this.backgroundColor, this.buttonIcon,
-      {this.isGhoseButton = false});
+      {this.isGhostButton = false});
 
   @override
   Widget build(BuildContext context) {
@@ -345,7 +398,7 @@ class MovieDetailScreenButtonView extends StatelessWidget {
         color: backgroundColor,
         borderRadius: BorderRadius.circular(MARGIN_LARGE),
         border:
-            isGhoseButton ? Border.all(color: Colors.white, width: 2) : null,
+            isGhostButton ? Border.all(color: Colors.white, width: 2) : null,
       ),
       height: MARGIN_XXLARGE,
       child: Center(
@@ -365,5 +418,37 @@ class MovieDetailScreenButtonView extends StatelessWidget {
         ],
       )),
     );
+  }
+}
+
+class AboutFilmSectionView extends StatelessWidget {
+  const AboutFilmSectionView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      TitleText("ABOUT FILM"),
+      SizedBox(
+        height: MARGIN_MEDIUM_2,
+      ),
+      AboutFilmInfoView("Original Title", "Stranger Things 2"),
+      SizedBox(
+        height: MARGIN_MEDIUM_2,
+      ),
+      AboutFilmInfoView("TYPE", "Action , Adventure , Thriller"),
+      SizedBox(
+        height: MARGIN_MEDIUM_2,
+      ),
+      AboutFilmInfoView("PRoduction", "United Kindom USA"),
+      SizedBox(
+        height: MARGIN_MEDIUM_2,
+      ),
+      AboutFilmInfoView("Premiere", "8 Nov 2016 (World)"),
+      SizedBox(
+        height: MARGIN_MEDIUM_2,
+      ),
+      AboutFilmInfoView("Description",
+          "The new Starcourt Mall has become the center of attention for Hawkins residents, putting the majority of other local stores out of business due to the mall's popularity. Hopper becomes increasingly concerned about Eleven and Mike's relationship and becomes very protective of his daughter. "),
+    ]);
   }
 }

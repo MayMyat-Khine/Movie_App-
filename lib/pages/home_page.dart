@@ -1,5 +1,6 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_app_ui/pages/movie_details_page.dart';
 import 'package:movie_app_ui/resources/colors.dart';
 import 'package:movie_app_ui/resources/dimens.dart';
 import 'package:movie_app_ui/resources/strings.dart';
@@ -51,12 +52,15 @@ class HomePage extends StatelessWidget {
                 SizedBox(
                   height: MARGIN_LARGE,
                 ),
-                BestPopularMoviesAndSerialsSectionView(),
+                BestPopularMoviesAndSerialsSectionView(() =>
+                  _navigateToDetailScreen(context)
+                ),
                 CheckMovieShowTimeSectionView(),
                 SizedBox(
                   height: MARGIN_LARGE,
                 ),
-                GenreSectionView(genreList: genreList),
+                GenreSectionView(() =>
+                    _navigateToDetailScreen(context), genreList: genreList),
                 // HorizontalMovieListView(),
                 SizedBox(
                   height: MARGIN_LARGE,
@@ -75,16 +79,24 @@ class HomePage extends StatelessWidget {
           ),
         ));
   }
+
+  void _navigateToDetailScreen(BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MovieDetailPage()));
+  }
 }
 
 class GenreSectionView extends StatelessWidget {
-  const GenreSectionView({
+  const GenreSectionView(
+    this.onTapMovie, {
     Key? key,
     required this.genreList,
   }) : super(key: key);
 
   final List<String> genreList;
-
+  final Function onTapMovie;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -111,7 +123,7 @@ class GenreSectionView extends StatelessWidget {
             top: MARGIN_MEDIUM_2,
             bottom: MARGIN_LARGE,
           ),
-          child: HorizontalMovieListView(),
+          child: HorizontalMovieListView(onTapMovie),
         )
       ],
     );
@@ -186,9 +198,8 @@ class ShowCasesSection extends StatelessWidget {
 }
 
 class BestPopularMoviesAndSerialsSectionView extends StatelessWidget {
-  const BestPopularMoviesAndSerialsSectionView({
-    Key? key,
-  }) : super(key: key);
+  final Function onTapMovie;
+  BestPopularMoviesAndSerialsSectionView(this.onTapMovie);
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +213,7 @@ class BestPopularMoviesAndSerialsSectionView extends StatelessWidget {
         SizedBox(
           height: MARGIN_MEDIUM_2,
         ),
-        HorizontalMovieListView(),
+        HorizontalMovieListView(onTapMovie),
       ],
     );
   }
