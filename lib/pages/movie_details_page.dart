@@ -26,7 +26,7 @@ class MovieDetailPage extends StatelessWidget {
           SliverList(
               delegate: SliverChildListDelegate([
             Container(
-              margin: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
+              margin: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
               child: TrailerSection(genreList),
             ),
             ActorsAndCreatorsSectionView(
@@ -225,19 +225,24 @@ class TrailerSection extends StatelessWidget {
       Row(
         children: [
           MovieDetailScreenButtonView(
-              "PLAY TRAILER",
-              PLAY_BUTTON_COLOR,
-              Icon(
-                Icons.play_circle_filled,
-                color: Colors.black54,
-              )),
+            "PLAY TRAILER",
+            PLAY_BUTTON_COLOR,
+            Icon(
+              Icons.play_circle_filled,
+              color: Colors.black54,
+            ),
+          ),
+          SizedBox(
+            width: MARGIN_MEDIUM,
+          ),
           MovieDetailScreenButtonView(
               "RATE MOVIE",
               HOME_SCREEN_BACKGROUND_COLOR,
               Icon(
                 Icons.star,
                 color: PLAY_BUTTON_COLOR,
-              )),
+              ),
+              isGhoseButton: true),
         ],
       )
     ]);
@@ -339,7 +344,8 @@ class MovieDetailScreenButtonView extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(MARGIN_LARGE),
-        border: Border.all(color: Colors.white, width: 2),
+        border:
+            isGhoseButton ? Border.all(color: Colors.white, width: 2) : null,
       ),
       height: MARGIN_XXLARGE,
       child: Center(
