@@ -317,9 +317,9 @@ class GenreChipView extends StatelessWidget {
               style:
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             )),
-        SizedBox(
-          width: MARGIN_SMALL,
-        )
+        // SizedBox(
+        //   width: MARGIN_SMALL,
+        // )
       ],
     );
   }
@@ -332,6 +332,7 @@ class MovieTimeAndGenreView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
           Icons.access_time,
@@ -345,10 +346,12 @@ class MovieTimeAndGenreView extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         SizedBox(
-          width: MARGIN_MEDIUM,
+          width: MARGIN_SMALL,
         ),
-        Row(
-          children: genreList.map((genre) => GenreChipView(genre)).toList(),
+        SizedBox(
+          child: Row(
+            children: genreList.map((genre) => GenreChipView(genre)).toList(),
+          ),
         ),
         Spacer(),
         Icon(
