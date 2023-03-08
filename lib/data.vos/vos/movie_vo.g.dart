@@ -14,7 +14,7 @@ MovieVO _$MovieVOFromJson(Map<String, dynamic> json) => MovieVO(
       json['original_language'] as String?,
       json['original_title'] as String?,
       json['overview'] as String?,
-      json['popularity'] as String?,
+      (json['popularity'] as num?)?.toDouble(),
       json['poster_path'] as String?,
       json['release_date'] as String?,
       json['title'] as String?,

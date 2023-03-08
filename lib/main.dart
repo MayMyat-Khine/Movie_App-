@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app_ui/network/retrofit_data_agent_impl.dart';
+import 'package:movie_app_ui/network/data_agents/retrofit_data_agent_impl.dart';
 import 'package:movie_app_ui/pages/home_page.dart';
 
 void main() {

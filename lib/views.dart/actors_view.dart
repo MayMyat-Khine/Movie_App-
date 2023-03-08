@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:movie_app_ui/data.vos/vos/actor_vo.dart';
+import 'package:movie_app_ui/network/api_constants.dart';
 import 'package:movie_app_ui/resources/colors.dart';
 import 'package:movie_app_ui/resources/dimens.dart';
 
 class ActorsView extends StatelessWidget {
-  const ActorsView({super.key});
+  final ActorVO? actor;
+  ActorsView({required this.actor});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Container(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
         width: MOVIE_LIST_IIEM_WIDTH,
         child: Stack(children: [
           Positioned.fill(
-              child: ActorImageView()),
-          Padding(
-            padding: const EdgeInsets.all(MARGIN_MEDIUM),
+              child: ActorImageView(imageUrl: actor?.profilePath ?? "")),
+          const Padding(
+            padding: EdgeInsets.all(MARGIN_MEDIUM),
             child: Align(
               alignment: Alignment.topRight,
               child: FavouriteButtonView(),
@@ -25,7 +28,9 @@ class ActorsView extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: ActorNameAndLikeView(),
+            child: ActorNameAndLikeView(
+              name: actor?.name,
+            ),
           )
         ]),
       ),
@@ -34,15 +39,12 @@ class ActorsView extends StatelessWidget {
 }
 
 class ActorImageView extends StatelessWidget {
-  const ActorImageView({
-    Key? key,
-  }) : super(key: key);
+  final String imageUrl;
+  ActorImageView({required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
-    return Image.network(
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3_M8A2WLy8BR2DSRAaEq7gncMX2Jm8AyPwA&usqp=CAU",
-        fit: BoxFit.cover);
+    return Image.network("$IMAGE_BASE_URL$imageUrl", fit: BoxFit.cover);
   }
 }
 
@@ -53,7 +55,7 @@ class FavouriteButtonView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Icon(
+    return const Icon(
       Icons.favorite_outline_outlined,
       color: Colors.white,
     );
@@ -61,37 +63,36 @@ class FavouriteButtonView extends StatelessWidget {
 }
 
 class ActorNameAndLikeView extends StatelessWidget {
-  const ActorNameAndLikeView({
-    Key? key,
-  }) : super(key: key);
+  final String? name;
+  ActorNameAndLikeView({this.name});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
           horizontal: MARGIN_MEDIUM, vertical: MARGIN_MEDIUM_2),
       child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Finn Wolfhard",
-              style: TextStyle(
+              name ?? "",
+              style: const TextStyle(
                   color: Colors.white,
                   fontSize: TEXT_REGULAR,
                   fontWeight: FontWeight.w700),
             ),
-            SizedBox(
+            const SizedBox(
               height: MARGIN_MEDIUM,
             ),
             Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.thumb_up,
                   color: Colors.amber,
                   size: MARGIN_CARD_MEDIUM_2,
                 ),
-                Text(
+                const Text(
                   "You Liked 13 movies",
                   style: TextStyle(
                       color: HOME_SCREEN_LIST_TITLE_COLOR,

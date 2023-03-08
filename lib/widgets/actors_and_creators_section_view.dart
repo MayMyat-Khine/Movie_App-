@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app_ui/data.vos/vos/actor_vo.dart';
 import 'package:movie_app_ui/resources/colors.dart';
 import 'package:movie_app_ui/resources/dimens.dart';
 import 'package:movie_app_ui/resources/strings.dart';
@@ -9,15 +10,16 @@ class ActorsAndCreatorsSectionView extends StatelessWidget {
   final String titleText;
   final String seeMoreText;
   final bool seeMoreButtonVisibility;
-
+  final List<ActorVO>? actorsList;
   ActorsAndCreatorsSectionView(this.titleText, this.seeMoreText,
-      {this.seeMoreButtonVisibility = true});
+      {this.seeMoreButtonVisibility = true, this.actorsList});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: PRIMARY_BACKGROUND_COLOR,
-      padding: EdgeInsets.only(top: MARGIN_MEDIUM_2, bottom: MARGIN_XXLARGE),
+      padding:
+          const EdgeInsets.only(top: MARGIN_MEDIUM_2, bottom: MARGIN_XXLARGE),
       child: Column(
         children: [
           Padding(
@@ -28,19 +30,18 @@ class ActorsAndCreatorsSectionView extends StatelessWidget {
               seeMoreButtonVisibility: seeMoreButtonVisibility,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: MARGIN_MEDIUM_2,
           ),
           Container(
             height: BEST_ACTORS_HEIGHT,
             child: ListView(
                 scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.only(left: MARGIN_MEDIUM_2),
-                children: [
-                  ActorsView(),
-                  ActorsView(),
-                  ActorsView(),
-                ]),
+                padding: const EdgeInsets.only(left: MARGIN_MEDIUM_2),
+                children: actorsList
+                        ?.map((actor) => ActorsView(actor: actor))
+                        .toList() ??
+                    []),
           ),
         ],
       ),
