@@ -17,6 +17,11 @@ ActorVO _$ActorVOFromJson(Map<String, dynamic> json) => ActorVO(
       json['name'] as String?,
       (json['popularity'] as num?)?.toDouble(),
       json['profile_path'] as String?,
+      json['original_name'] as String?,
+      json['cast_id'] as int?,
+      json['character'] as String?,
+      json['credit_id'] as String?,
+      json['order'] as int?,
     );
 
 Map<String, dynamic> _$ActorVOToJson(ActorVO instance) => <String, dynamic>{
@@ -28,4 +33,9 @@ Map<String, dynamic> _$ActorVOToJson(ActorVO instance) => <String, dynamic>{
       'name': instance.name,
       'popularity': instance.popularity,
       'profile_path': instance.profilePath,
+      'original_name': instance.originalName,
+      'cast_id': instance.castId,
+      'character': instance.character,
+      'credit_id': instance.creditId,
+      'order': instance.order,
     };

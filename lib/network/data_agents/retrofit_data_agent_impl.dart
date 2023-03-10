@@ -75,4 +75,19 @@ class RetrofitDataAgentImpl extends MovieDateAgent {
         .map((response) => response.results)
         .first;
   }
+
+  @override
+  Future<List<List<ActorVO>?>> getCreditsByMovie(int movieId) {
+    return mApi
+        .getCreditsByMovie(movieId.toString(), API_KEY)
+        .asStream()
+        .map((creditByMovieResponse) =>
+            [creditByMovieResponse.cast, creditByMovieResponse.crew])
+        .first;
+  }
+
+  @override
+  Future<MovieVO>? getMovieDetails(int movieId) {
+    return mApi.getMovieDetails(movieId.toString(), API_KEY);
+  }
 }
