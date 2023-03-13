@@ -7,7 +7,7 @@ import 'package:movie_app_ui/data.vos/models/movie_model.dart';
 import 'package:movie_app_ui/data.vos/models/movie_model_impl.dart';
 import 'package:movie_app_ui/data.vos/vos/actor_vo.dart';
 import 'package:movie_app_ui/data.vos/vos/movie_vo.dart';
-import 'package:movie_app_ui/network/api_constants.dart';
+import 'package:movie_app_ui/constants.dart/api_constants.dart';
 import 'package:movie_app_ui/resources/colors.dart';
 import 'package:movie_app_ui/resources/dimens.dart';
 import 'package:movie_app_ui/resources/strings.dart';

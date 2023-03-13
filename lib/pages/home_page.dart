@@ -44,8 +44,17 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    /// Now Playing Movies
-    movieModel.getNowPlayingMovies(1).then((movieList) {
+    // / Now Playing Movies
+    // movieModel.getNowPlayingMovies(1).then((movieList) {
+    //   setState(() {
+    //     nowPlayingMovies = movieList;
+    //   });
+    // }).catchError((error) {
+    //   debugPrint(error.toString());
+    // });
+
+    /// Now Playing Movies From Database
+    movieModel.getNowPlayingMoviesFromDatabase(1).then((movieList) {
       setState(() {
         nowPlayingMovies = movieList;
       });
@@ -62,8 +71,26 @@ class _HomePageState extends State<HomePage> {
       debugPrint(error.toString());
     });
 
+    /// Popular Movies From Database
+    // movieModel.getPopularMoviesFromDatabase(1).then((movieList) {
+    //   setState(() {
+    //     popularMovies = movieList;
+    //   });
+    // }).catchError((error) {
+    //   debugPrint(error.toString());
+    // });
+
     /// Top Rated Movies
-    movieModel.getTopRatedMovies(1).then((movieList) {
+    // movieModel.getTopRatedMovies(1).then((movieList) {
+    //   setState(() {
+    //     topRatedMovies = movieList;
+    //   });
+    // }).catchError((error) {
+    //   debugPrint(error.toString());
+    // });
+
+    /// Top Rated Movies From Database
+    movieModel.getTopRatedMoviesFromDatabase(1).then((movieList) {
       setState(() {
         topRatedMovies = movieList;
       });
@@ -83,6 +110,18 @@ class _HomePageState extends State<HomePage> {
       debugPrint(error.toString());
     });
 
+    /// Genres from Database
+    movieModel.getGenresFromDatabase().then((genreList) {
+      setState(() {
+        genres = genreList;
+      });
+
+      /// Movies By Genre
+      _getMoviesByGenre(genres?.first.id ?? 1);
+    }).catchError((error) {
+      debugPrint(error.toString());
+    });
+
     /// Actors
     movieModel.getActors(1).then((actorList) {
       setState(() {
@@ -91,6 +130,16 @@ class _HomePageState extends State<HomePage> {
     }).catchError((error) {
       debugPrint(error.toString());
     });
+
+    /// Actors From
+    movieModel.getActorsFromDatabase(1).then((actorList) {
+      setState(() {
+        actors = actorList;
+      });
+    }).catchError((error) {
+      debugPrint(error.toString());
+    });
+
     super.initState();
   }
 

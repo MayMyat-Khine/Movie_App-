@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app_ui/data.vos/vos/movie_vo.dart';
-import 'package:movie_app_ui/network/api_constants.dart';
+import 'package:movie_app_ui/constants.dart/api_constants.dart';
 import 'package:movie_app_ui/widgets/rating_view.dart';
 
 import '../resources/dimens.dart';

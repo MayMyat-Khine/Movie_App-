@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:movie_app_ui/data.vos/vos/actor_vo.dart';
 import 'package:movie_app_ui/data.vos/vos/genre_vo.dart';
 import 'package:movie_app_ui/data.vos/vos/movie_vo.dart';
-import 'package:movie_app_ui/network/api_constants.dart';
+import 'package:movie_app_ui/constants.dart/api_constants.dart';
 import 'package:movie_app_ui/network/data_agents/movie_data_agent.dart';
 import 'package:movie_app_ui/network/the_movie_api.dart';
 
@@ -87,7 +87,7 @@ class RetrofitDataAgentImpl extends MovieDateAgent {
   }
 
   @override
-  Future<MovieVO>? getMovieDetails(int movieId) {
+  Future<MovieVO> getMovieDetails(int movieId) {
     return mApi.getMovieDetails(movieId.toString(), API_KEY);
   }
 }

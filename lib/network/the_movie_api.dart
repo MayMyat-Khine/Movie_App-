@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:movie_app_ui/data.vos/vos/movie_vo.dart';
-import 'package:movie_app_ui/network/api_constants.dart';
+import 'package:movie_app_ui/constants.dart/api_constants.dart';
 import 'package:movie_app_ui/network/responses/get_actors_response.dart';
 import 'package:movie_app_ui/network/responses/get_credits_by_movie_response.dart';
 import 'package:movie_app_ui/network/responses/get_genres_response.dart';
