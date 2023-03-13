@@ -68,7 +68,7 @@ class MovieModelImpl extends MovieModel {
 
   @override
   Future<List<MovieVO>?> getPopularMovies(int page) {
-    return _dataAgent.getNowPlayingMovies(page).then((movies) {
+    return _dataAgent.getPopularMovies(page).then((movies) {
       if (movies != null && movies != []) {
         List<MovieVO> nowPlayingMovies = movies.map((movie) {
           movie.isNowPlaying = false;
@@ -111,6 +111,7 @@ class MovieModelImpl extends MovieModel {
     });
   }
 
+  /// Database
   @override
   Future<List<ActorVO>?> getActorsFromDatabase(int page) {
     return Future.value(_actorDao.getActorList());

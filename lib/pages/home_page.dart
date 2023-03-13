@@ -63,16 +63,7 @@ class _HomePageState extends State<HomePage> {
     });
 
     /// Popular Movies
-    movieModel.getPopularMovies(1).then((movieList) {
-      setState(() {
-        popularMovies = movieList;
-      });
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
-
-    /// Popular Movies From Database
-    // movieModel.getPopularMoviesFromDatabase(1).then((movieList) {
+    // movieModel.getPopularMovies(2).then((movieList) {
     //   setState(() {
     //     popularMovies = movieList;
     //   });
@@ -80,8 +71,17 @@ class _HomePageState extends State<HomePage> {
     //   debugPrint(error.toString());
     // });
 
+    /// Popular Movies From Database
+    movieModel.getPopularMoviesFromDatabase(2).then((movieList) {
+      setState(() {
+        popularMovies = movieList;
+      });
+    }).catchError((error) {
+      debugPrint(error.toString());
+    });
+
     /// Top Rated Movies
-    // movieModel.getTopRatedMovies(1).then((movieList) {
+    // movieModel.getTopRatedMovies(3).then((movieList) {
     //   setState(() {
     //     topRatedMovies = movieList;
     //   });
@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
     // });
 
     /// Top Rated Movies From Database
-    movieModel.getTopRatedMoviesFromDatabase(1).then((movieList) {
+    movieModel.getTopRatedMoviesFromDatabase(3).then((movieList) {
       setState(() {
         topRatedMovies = movieList;
       });
