@@ -24,29 +24,32 @@ class RetrofitDataAgentImpl extends MovieDateAgent {
 
   @override
   Future<List<MovieVO>?> getNowPlayingMovies(int page) {
-    return mApi
+    var nowplaying = mApi
         .getNowPlayingMovies(API_KEY, LANGUAGE_EN_US, page.toString())
         .asStream()
         .map((response) => response.result)
         .first;
+    return nowplaying;
   }
 
   @override
   Future<List<MovieVO>?> getPopularMovies(int page) {
-    return mApi
-        .getNowPlayingMovies(API_KEY, LANGUAGE_EN_US, page.toString())
+    var popular = mApi
+        .getPopularMovies(API_KEY, LANGUAGE_EN_US, page.toString())
         .asStream()
         .map((response) => response.result)
         .first;
+    return popular;
   }
 
   @override
   Future<List<MovieVO>?> getTopRatedMovies(int page) {
-    return mApi
-        .getNowPlayingMovies(API_KEY, LANGUAGE_EN_US, page.toString())
+    var toprated = mApi
+        .getTopRatedMovies(API_KEY, LANGUAGE_EN_US, page.toString())
         .asStream()
         .map((response) => response.result)
         .first;
+    return toprated;
   }
 
   @override

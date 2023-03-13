@@ -44,6 +44,24 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    /// Popular Movies
+    // movieModel.getPopularMovies(1).then((movieList) {
+    //   setState(() {
+    //     popularMovies = movieList;
+    //   });
+    // }).catchError((error) {
+    //   debugPrint(error.toString());
+    // });
+
+    /// Popular Movies From Database
+    movieModel.getPopularMoviesFromDatabase().then((movieList) {
+      setState(() {
+        popularMovies = movieList;
+      });
+    }).catchError((error) {
+      debugPrint(error.toString());
+    });
+
     // / Now Playing Movies
     // movieModel.getNowPlayingMovies(1).then((movieList) {
     //   setState(() {
@@ -54,7 +72,7 @@ class _HomePageState extends State<HomePage> {
     // });
 
     /// Now Playing Movies From Database
-    movieModel.getNowPlayingMoviesFromDatabase(1).then((movieList) {
+    movieModel.getNowPlayingMoviesFromDatabase().then((movieList) {
       setState(() {
         nowPlayingMovies = movieList;
       });
@@ -62,26 +80,8 @@ class _HomePageState extends State<HomePage> {
       debugPrint(error.toString());
     });
 
-    /// Popular Movies
-    // movieModel.getPopularMovies(2).then((movieList) {
-    //   setState(() {
-    //     popularMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-
-    /// Popular Movies From Database
-    movieModel.getPopularMoviesFromDatabase(2).then((movieList) {
-      setState(() {
-        popularMovies = movieList;
-      });
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
-
     /// Top Rated Movies
-    // movieModel.getTopRatedMovies(3).then((movieList) {
+    // movieModel.getTopRatedMovies(1).then((movieList) {
     //   setState(() {
     //     topRatedMovies = movieList;
     //   });
@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
     // });
 
     /// Top Rated Movies From Database
-    movieModel.getTopRatedMoviesFromDatabase(3).then((movieList) {
+    movieModel.getTopRatedMoviesFromDatabase().then((movieList) {
       setState(() {
         topRatedMovies = movieList;
       });
@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> {
     });
 
     /// Actors From
-    movieModel.getActorsFromDatabase(1).then((actorList) {
+    movieModel.getActorsFromDatabase().then((actorList) {
       setState(() {
         actors = actorList;
       });
