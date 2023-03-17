@@ -14,13 +14,11 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart';
 
 void main() async {
-  // RetrofitDataAgentImpl().getNowPlayingMovies(1);
+  RetrofitDataAgentImpl().getNowPlayingMovies(1);
   await Hive.initFlutter();
 
   Hive.registerAdapter(ActorVOAdapter());
-  // Hive.registerAdapter(ActorVOAdapter());
   Hive.registerAdapter(CollectionsVOAdapter());
-  // Hive.registerAdapter(ActorVOAdapter());
   Hive.registerAdapter(DateVOAdapter());
   Hive.registerAdapter(GenreVOAdapter());
   Hive.registerAdapter(MovieVOAdapter());

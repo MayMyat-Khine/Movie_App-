@@ -45,13 +45,13 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     /// Popular Movies
-    // movieModel.getPopularMovies(1).then((movieList) {
-    //   setState(() {
-    //     popularMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
+    movieModel.getPopularMovies(1).then((movieList) {
+      setState(() {
+        popularMovies = movieList;
+      });
+    }).catchError((error) {
+      debugPrint(error.toString());
+    });
 
     /// Popular Movies From Database
     movieModel.getPopularMoviesFromDatabase().then((movieList) {
@@ -63,13 +63,13 @@ class _HomePageState extends State<HomePage> {
     });
 
     // / Now Playing Movies
-    // movieModel.getNowPlayingMovies(1).then((movieList) {
-    //   setState(() {
-    //     nowPlayingMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
+    movieModel.getNowPlayingMovies(1).then((movieList) {
+      setState(() {
+        nowPlayingMovies = movieList;
+      });
+    }).catchError((error) {
+      debugPrint(error.toString());
+    });
 
     /// Now Playing Movies From Database
     movieModel.getNowPlayingMoviesFromDatabase().then((movieList) {
@@ -81,13 +81,13 @@ class _HomePageState extends State<HomePage> {
     });
 
     /// Top Rated Movies
-    // movieModel.getTopRatedMovies(1).then((movieList) {
-    //   setState(() {
-    //     topRatedMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
+    movieModel.getTopRatedMovies(1).then((movieList) {
+      setState(() {
+        topRatedMovies = movieList;
+      });
+    }).catchError((error) {
+      debugPrint(error.toString());
+    });
 
     /// Top Rated Movies From Database
     movieModel.getTopRatedMoviesFromDatabase().then((movieList) {
@@ -405,7 +405,7 @@ class _BannerSectionViewState extends State<BannerSectionView> {
                   _position = page.toDouble();
                 });
               },
-              children: widget.movieList?.map((movie) {
+              children: widget.movieList?.getRange(0, 6).map((movie) {
                     return BannerView(
                       movie: movie,
                     );
@@ -418,7 +418,7 @@ class _BannerSectionViewState extends State<BannerSectionView> {
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DotsIndicator(
-              dotsCount: widget.movieList?.length ??
+              dotsCount: widget.movieList?.getRange(0, 6).length ??
                   1, // dotcount must be at least 1 or it might cause exception
               position: _position,
               decorator: const DotsDecorator(
