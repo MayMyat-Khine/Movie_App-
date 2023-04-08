@@ -29,7 +29,59 @@ class MovieDao {
     return getMovieBox().get(movieId);
   }
 
+  /// Reactive
+  Stream<void> getAllMoviesEventStream() {
+    return getMovieBox().watch();
+  }
+
+  Stream<List<MovieVO>> getNowPlayingMoviesStream() {
+    return Stream.value(getMovieList()
+        .where((element) => element.isNowPlaying ?? false)
+        .toList());
+  }
+
+  Stream<List<MovieVO>> getPopularMoviesStream() {
+    return Stream.value(
+        getMovieList().where((element) => element.isPopular ?? false).toList());
+  }
+
+  Stream<List<MovieVO>> getTopRatedMoviesStream() {
+    return Stream.value(getMovieList()
+        .where((element) => element.isTopRated ?? false)
+        .toList());
+  }
+
   Box<MovieVO> getMovieBox() {
     return Hive.box<MovieVO>(BOX_NAME_MOVIE_VO);
+  }
+
+  List<MovieVO> getNowPlayingMovies() {
+    if (getMovieList() != null && (getMovieList().isNotEmpty)) {
+      return getMovieList()
+          .where((element) => element.isNowPlaying ?? false)
+          .toList();
+    } else {
+      return [];
+    }
+  }
+
+  List<MovieVO> getTopRatedMovies() {
+    if (getMovieList() != null && (getMovieList().isNotEmpty)) {
+      return getMovieList()
+          .where((element) => element.isTopRated ?? false)
+          .toList();
+    } else {
+      return [];
+    }
+  }
+
+  List<MovieVO> getPopularMovies() {
+    if (getMovieList() != null && (getMovieList().isNotEmpty)) {
+      return getMovieList()
+          .where((element) => element.isPopular ?? false)
+          .toList();
+    } else {
+      return [];
+    }
   }
 }

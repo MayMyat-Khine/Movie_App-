@@ -7,6 +7,7 @@ import 'package:movie_app_ui/network/data_agents/retrofit_data_agent_impl.dart';
 import 'package:movie_app_ui/persistence/daos/actor_dao.dart';
 import 'package:movie_app_ui/persistence/daos/genre_dao.dart';
 import 'package:movie_app_ui/persistence/daos/movie_dao.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 class MovieModelImpl extends MovieModel {
   MovieDateAgent _dataAgent =
@@ -26,8 +27,8 @@ class MovieModelImpl extends MovieModel {
   final ActorDao _actorDao = ActorDao();
 
   @override
-  Future<List<MovieVO>?> getNowPlayingMovies(int page) {
-    return _dataAgent.getNowPlayingMovies(page).then((movies) {
+  void getNowPlayingMovies(int page) {
+    _dataAgent.getNowPlayingMovies(page).then((movies) {
       if (movies != null && movies != []) {
         List<MovieVO> nowPlayingMovies = movies.map((movie) {
           movie.isNowPlaying = true;
@@ -37,7 +38,7 @@ class MovieModelImpl extends MovieModel {
         }).toList();
         _movieDao.saveMovieList(nowPlayingMovies);
       }
-      return movies;
+      // return movies;
     });
   }
 
@@ -67,8 +68,8 @@ class MovieModelImpl extends MovieModel {
   }
 
   @override
-  Future<List<MovieVO>?> getPopularMovies(int page) {
-    return _dataAgent.getPopularMovies(page).then((movies) {
+  void getPopularMovies(int page) {
+    _dataAgent.getPopularMovies(page).then((movies) {
       if (movies != null && movies != []) {
         List<MovieVO> nowPlayingMovies = movies.map((movie) {
           movie.isNowPlaying = false;
@@ -78,13 +79,13 @@ class MovieModelImpl extends MovieModel {
         }).toList();
         _movieDao.saveMovieList(nowPlayingMovies);
       }
-      return movies;
+      // return movies;
     });
   }
 
   @override
-  Future<List<MovieVO>?> getTopRatedMovies(int page) {
-    return _dataAgent.getTopRatedMovies(page).then((movies) {
+  void getTopRatedMovies(int page) {
+    _dataAgent.getTopRatedMovies(page).then((movies) {
       if (movies != null && movies != []) {
         List<MovieVO> nowPlayingMovies = movies.map((movie) {
           movie.isNowPlaying = false;
@@ -94,7 +95,7 @@ class MovieModelImpl extends MovieModel {
         }).toList();
         _movieDao.saveMovieList(nowPlayingMovies);
       }
-      return movies;
+      // return movies;
     });
   }
 
@@ -128,26 +129,45 @@ class MovieModelImpl extends MovieModel {
   }
 
   @override
-  Future<List<MovieVO>?> getNowPlayingMoviesFromDatabase() {
-    return Future.value(_movieDao
-        .getMovieList()
-        .where((movie) => movie.isNowPlaying ?? true)
-        .toList());
+  Stream<List<MovieVO>?> getNowPlayingMoviesFromDatabase() {
+    getNowPlayingMovies(1);
+    return _movieDao
+        .getAllMoviesEventStream()
+        .startWith(_movieDao.getNowPlayingMoviesStream())
+        // .combineLatest(_movieDao.getNowPlayingMoviesStream(),
+        //     (event, movieList) => movieList);
+        .map((event) => _movieDao.getNowPlayingMovies());
   }
 
   @override
-  Future<List<MovieVO>?> getPopularMoviesFromDatabase() {
-    return Future.value(_movieDao
-        .getMovieList()
-        .where((movie) => movie.isPopular ?? true)
-        .toList());
+  Stream<List<MovieVO>?> getPopularMoviesFromDatabase() {
+    getPopularMovies(1);
+    return _movieDao
+        .getAllMoviesEventStream()
+        .startWith(_movieDao.getPopularMoviesStream())
+        .map((event) => _movieDao.getPopularMovies());
+    // .combineLatest(
+    //     _movieDao.getPopularMoviesStream(), (event, movieList) => movieList)
+    // .first;
+    // return Future.value(_movieDao
+    //     .getMovieList()
+    //     .where((movie) => movie.isPopular ?? true)
+    //     .toList());
   }
 
   @override
-  Future<List<MovieVO>?> getTopRatedMoviesFromDatabase() {
-    return Future.value(_movieDao
-        .getMovieList()
-        .where((movie) => movie.isTopRated ?? true)
-        .toList());
+  Stream<List<MovieVO>?> getTopRatedMoviesFromDatabase() {
+    getTopRatedMovies(1);
+    return _movieDao
+        .getAllMoviesEventStream()
+        .startWith(_movieDao.getTopRatedMoviesStream())
+        .map((event) => _movieDao.getTopRatedMovies());
+    // .combineLatest(_movieDao.getTopRatedMoviesStream(),
+    //     (event, movieList) => movieList)
+    // .first;
+    // return Future.value(_movieDao
+    //     .getMovieList()
+    //     .where((movie) => movie.isTopRated ?? true)
+    //     .toList());
   }
 }

@@ -45,58 +45,79 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     /// Popular Movies
-    movieModel.getPopularMovies(1).then((movieList) {
-      setState(() {
-        popularMovies = movieList;
-      });
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
+    // movieModel.getPopularMovies(1).then((movieList) {
+    //   setState(() {
+    //     popularMovies = movieList;
+    //   });
+    // }).catchError((error) {
+    //   debugPrint(error.toString());
+    // });
 
     /// Popular Movies From Database
-    movieModel.getPopularMoviesFromDatabase().then((movieList) {
+    movieModel.getPopularMoviesFromDatabase().listen((movieList) {
       setState(() {
         popularMovies = movieList;
       });
-    }).catchError((error) {
+    }).onError((error) {
       debugPrint(error.toString());
     });
+    // .then((movieList) {
+    //   setState(() {
+    //     popularMovies = movieList;
+    //   });
+    // }).catchError((error) {
+    //   debugPrint(error.toString());
+    // });
 
     // / Now Playing Movies
-    movieModel.getNowPlayingMovies(1).then((movieList) {
-      setState(() {
-        nowPlayingMovies = movieList;
-      });
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
+    // movieModel.getNowPlayingMovies(1).then((movieList) {
+    //   setState(() {
+    //     nowPlayingMovies = movieList;
+    //   });
+    // }).catchError((error) {
+    //   debugPrint(error.toString());
+    // });
 
     /// Now Playing Movies From Database
-    movieModel.getNowPlayingMoviesFromDatabase().then((movieList) {
+    movieModel.getNowPlayingMoviesFromDatabase().listen((movieList) {
       setState(() {
         nowPlayingMovies = movieList;
       });
-    }).catchError((error) {
+    }).onError((error) {
       debugPrint(error.toString());
     });
+    // .then((movieList) {
+    //   setState(() {
+    //     nowPlayingMovies = movieList;
+    //   });
+    // }).catchError((error) {
+    //   debugPrint(error.toString());
+    // });
 
     /// Top Rated Movies
-    movieModel.getTopRatedMovies(1).then((movieList) {
-      setState(() {
-        topRatedMovies = movieList;
-      });
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
+    // movieModel.getTopRatedMovies(1).then((movieList) {
+    //   setState(() {
+    //     topRatedMovies = movieList;
+    //   });
+    // }).catchError((error) {
+    //   debugPrint(error.toString());
+    // });
 
     /// Top Rated Movies From Database
-    movieModel.getTopRatedMoviesFromDatabase().then((movieList) {
+    movieModel.getTopRatedMoviesFromDatabase().listen((movieList) {
       setState(() {
         topRatedMovies = movieList;
       });
-    }).catchError((error) {
+    }).onError((error) {
       debugPrint(error.toString());
     });
+    // .then((movieList) {
+    //   setState(() {
+    //     topRatedMovies = movieList;
+    //   });
+    // }).catchError((error) {
+    //   debugPrint(error.toString());
+    // });
 
     /// Genres
     movieModel.getGenres().then((genreList) {
