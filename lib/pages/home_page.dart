@@ -17,6 +17,7 @@ import 'package:movie_app_ui/widgets/actors_and_creators_section_view.dart';
 import 'package:movie_app_ui/widgets/see_more_text.dart';
 import 'package:movie_app_ui/widgets/title_text.dart';
 import 'package:movie_app_ui/widgets/title_text_with_see_more_view.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -126,7 +127,7 @@ class _HomePageState extends State<HomePage> {
       });
 
       /// Movies By Genre
-      _getMoviesByGenre(genres?.first.id ?? 1);
+      // _getMoviesByGenre(genres?.first.id ?? 1);
     }).catchError((error) {
       debugPrint(error.toString());
     });
@@ -138,7 +139,7 @@ class _HomePageState extends State<HomePage> {
       });
 
       /// Movies By Genre
-      _getMoviesByGenre(genres?.first.id ?? 1);
+      // _getMoviesByGenre(genres?.first.id ?? 1);
     }).catchError((error) {
       debugPrint(error.toString());
     });
@@ -164,15 +165,15 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  void _getMoviesByGenre(int genreId) {
-    movieModel.getMoviesByGenre(genreId).then((movieList) {
-      setState(() {
-        moviesByGenre = movieList;
-      });
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
-  }
+  // void _getMoviesByGenre(int genreId) {
+  //   movieModel.getMoviesByGenre(genreId).then((movieList) {
+  //     setState(() {
+  //       moviesByGenre = movieList;
+  //     });
+  //   }).catchError((error) {
+  //     debugPrint(error.toString());
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -200,43 +201,68 @@ class _HomePageState extends State<HomePage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                BannerSectionView(
-                  movieList: popularMovies,
+                ScopedModelDescendant<MovieModelImpl>(
+                  builder: (BuildContext context, Widget? child,
+                      MovieModelImpl model) {
+                    return BannerSectionView(
+                      movieList: model.getPopularMoviesList,
+                    );
+                  },
                 ),
                 const SizedBox(
                   height: MARGIN_LARGE,
                 ),
-                BestPopularMoviesAndSerialsSectionView(
-                    (movieId) => _navigateToDetailScreen(context, movieId),
-                    nowPlayingMovies),
+                ScopedModelDescendant<MovieModelImpl>(
+                  builder: (BuildContext context, Widget? child,
+                      MovieModelImpl model) {
+                    return BestPopularMoviesAndSerialsSectionView(
+                        (movieId) => _navigateToDetailScreen(context, movieId),
+                        model.getNowPlayingMoviesList);
+                  },
+                ),
                 CheckMovieShowTimeSectionView(),
                 const SizedBox(
                   height: MARGIN_LARGE,
                 ),
-                GenreSectionView(
-                  (movieId) => _navigateToDetailScreen(context, movieId),
-                  genreList: genres,
-                  moviesByGenreList: moviesByGenre,
-                  onChooseGenre: (genreID) {
-                    if (genreID != null) {
-                      _getMoviesByGenre(genreID);
-                    }
+                ScopedModelDescendant<MovieModelImpl>(
+                  builder: (BuildContext context, Widget? child,
+                      MovieModelImpl model) {
+                    return GenreSectionView(
+                      (movieId) => _navigateToDetailScreen(context, movieId),
+                      genreList: model.getGenresList,
+                      moviesByGenreList: model.getmoviesByGenre,
+                      onChooseGenre: (genreID) {
+                        if (genreID != null) {
+                          model.getMoviesByGenre(genreID);
+                        }
+                      },
+                    );
                   },
                 ),
                 // HorizontalMovieListView(),
                 const SizedBox(
                   height: MARGIN_LARGE,
                 ),
-                ShowCasesSection(
-                  movieList: topRatedMovies,
+                ScopedModelDescendant<MovieModelImpl>(
+                  builder: (BuildContext context, Widget? child,
+                      MovieModelImpl model) {
+                    return ShowCasesSection(
+                      movieList: model.getTopRatedMoviesList,
+                    );
+                  },
                 ),
                 const SizedBox(
                   height: MARGIN_LARGE,
                 ),
-                ActorsAndCreatorsSectionView(
-                  BEST_ACTORS_TITLE,
-                  BEST_ACTORS_SEE_MORE,
-                  actorsList: actors,
+                ScopedModelDescendant<MovieModelImpl>(
+                  builder: (BuildContext context, Widget? child,
+                      MovieModelImpl model) {
+                    return ActorsAndCreatorsSectionView(
+                      BEST_ACTORS_TITLE,
+                      BEST_ACTORS_SEE_MORE,
+                      actorsList: model.getActorsList,
+                    );
+                  },
                 ),
                 const SizedBox(
                   height: MARGIN_LARGE,

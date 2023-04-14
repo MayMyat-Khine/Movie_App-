@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app_ui/data.vos/models/movie_model_impl.dart';
 import 'package:movie_app_ui/persistence/hive_constants.dart';
 import 'package:movie_app_ui/data.vos/vos/actor_vo.dart';
 import 'package:movie_app_ui/data.vos/vos/collections_vo.dart';
@@ -12,6 +13,7 @@ import 'package:movie_app_ui/network/data_agents/retrofit_data_agent_impl.dart';
 import 'package:movie_app_ui/pages/home_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 void main() async {
   RetrofitDataAgentImpl().getNowPlayingMovies(1);
@@ -38,13 +40,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return ScopedModel(
+      model: MovieModelImpl(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: HomePage(),
       ),
-      home: HomePage(),
     );
   }
 }
