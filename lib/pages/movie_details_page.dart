@@ -15,98 +15,61 @@ import 'package:movie_app_ui/widgets/actors_and_creators_section_view.dart';
 import 'package:movie_app_ui/widgets/gradient_view.dart';
 import 'package:movie_app_ui/widgets/rating_view.dart';
 import 'package:movie_app_ui/widgets/title_text.dart';
+import 'package:scoped_model/scoped_model.dart';
 
-class MovieDetailPage extends StatefulWidget {
-  final int movieId;
-  MovieDetailPage({required this.movieId});
-
-  @override
-  State<MovieDetailPage> createState() => _MovieDetailPageState();
-}
-
-class _MovieDetailPageState extends State<MovieDetailPage> {
-  final List<String> genreList = ["Actions", "Adventure", "Thriller"];
-  //State Variables
-  final MovieModel _movieModel = MovieModelImpl();
-  List<ActorVO>? casts = [];
-  List<ActorVO>? crews = [];
-  MovieVO? movieDetail;
-  @override
-  void initState() {
-    // Movie Detail From Network
-    // _movieModel.getMovieDetails(widget.movieId)?.then((movie) {
-    //   setState(() {
-    //     movieDetail = movie;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-
-// Movie Detail From Database
-    _movieModel.getMovieDetailsFromDatabase(widget.movieId)?.then((movie) {
-      setState(() {
-        movieDetail = movie;
-      });
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
-
-    _movieModel.getCreditsByMovie(widget.movieId).then((creditsByMovie) {
-      setState(() {
-        casts = creditsByMovie.first;
-        crews = creditsByMovie[1];
-      });
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
-    super.initState();
-  }
-
+class MovieDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: HOME_SCREEN_BACKGROUND_COLOR,
-        child: CustomScrollView(slivers: [
-          MovieDetailsSliverAppBarView(
-            () => Navigator.pop(context),
-            movieDetail: movieDetail,
-          ),
-          SliverList(
-              delegate: SliverChildListDelegate([
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-              child: TrailerSection(
-                genreList: movieDetail?.getGenreListAsStringList() ?? [],
-                storyLine: movieDetail?.overview ?? "",
+      body: ScopedModelDescendant<MovieModelImpl>(
+        builder: (BuildContext context, Widget? child, MovieModelImpl model) {
+          return Container(
+            color: HOME_SCREEN_BACKGROUND_COLOR,
+            child: CustomScrollView(slivers: [
+              MovieDetailsSliverAppBarView(
+                () => Navigator.pop(context),
+                movieDetail: model.movieDetail,
               ),
-            ),
-            const SizedBox(
-              height: MARGIN_LARGE,
-            ),
-            ActorsAndCreatorsSectionView(
-              MOVIE_DETAILS_SCREEN_ACTORS_TITLE,
-              "",
-              seeMoreButtonVisibility: false,
-              actorsList: casts,
-            ),
-            const SizedBox(
-              height: MARGIN_LARGE,
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-              child: AboutFilmSectionView(movieDetail: movieDetail),
-            ),
-            const SizedBox(
-              height: MARGIN_LARGE,
-            ),
-            ActorsAndCreatorsSectionView(
-              MOVIE_DETAILS_SCREEN_CREATORS_TITLE,
-              MOVIE_DETAILS_SCREEN_CREATORS_SEE_MORE,
-              actorsList: crews,
-            )
-          ]))
-        ]),
+              SliverList(
+                  delegate: SliverChildListDelegate([
+                Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
+                  child: TrailerSection(
+                    genreList:
+                        model.movieDetail?.getGenreListAsStringList() ?? [],
+                    storyLine: model.movieDetail?.overview ?? "",
+                  ),
+                ),
+                const SizedBox(
+                  height: MARGIN_LARGE,
+                ),
+                ActorsAndCreatorsSectionView(
+                  MOVIE_DETAILS_SCREEN_ACTORS_TITLE,
+                  "",
+                  seeMoreButtonVisibility: false,
+                  actorsList: model.casts,
+                ),
+                const SizedBox(
+                  height: MARGIN_LARGE,
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
+                  child: AboutFilmSectionView(movieDetail: model.movieDetail),
+                ),
+                const SizedBox(
+                  height: MARGIN_LARGE,
+                ),
+                ActorsAndCreatorsSectionView(
+                  MOVIE_DETAILS_SCREEN_CREATORS_TITLE,
+                  MOVIE_DETAILS_SCREEN_CREATORS_SEE_MORE,
+                  actorsList: model.crews,
+                )
+              ]))
+            ]),
+          );
+        },
       ),
     );
   }

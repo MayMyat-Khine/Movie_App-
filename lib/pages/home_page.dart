@@ -19,161 +19,8 @@ import 'package:movie_app_ui/widgets/title_text.dart';
 import 'package:movie_app_ui/widgets/title_text_with_see_more_view.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  List<String> genreList = [
-    "Action",
-    "Adventure",
-    "Horror",
-    "Comedy",
-    "Thriller",
-    "Drama"
-  ];
-
-// State Variables
-  MovieModel movieModel = MovieModelImpl();
-  List<MovieVO>? nowPlayingMovies;
-  List<MovieVO>? popularMovies;
-  List<MovieVO>? topRatedMovies;
-  List<MovieVO>? moviesByGenre;
-  List<GenreVO>? genres;
-  List<ActorVO>? actors;
-
-  @override
-  void initState() {
-    /// Popular Movies
-    // movieModel.getPopularMovies(1).then((movieList) {
-    //   setState(() {
-    //     popularMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-
-    /// Popular Movies From Database
-    movieModel.getPopularMoviesFromDatabase().listen((movieList) {
-      setState(() {
-        popularMovies = movieList;
-      });
-    }).onError((error) {
-      debugPrint(error.toString());
-    });
-    // .then((movieList) {
-    //   setState(() {
-    //     popularMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-
-    // / Now Playing Movies
-    // movieModel.getNowPlayingMovies(1).then((movieList) {
-    //   setState(() {
-    //     nowPlayingMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-
-    /// Now Playing Movies From Database
-    movieModel.getNowPlayingMoviesFromDatabase().listen((movieList) {
-      setState(() {
-        nowPlayingMovies = movieList;
-      });
-    }).onError((error) {
-      debugPrint(error.toString());
-    });
-    // .then((movieList) {
-    //   setState(() {
-    //     nowPlayingMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-
-    /// Top Rated Movies
-    // movieModel.getTopRatedMovies(1).then((movieList) {
-    //   setState(() {
-    //     topRatedMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-
-    /// Top Rated Movies From Database
-    movieModel.getTopRatedMoviesFromDatabase().listen((movieList) {
-      setState(() {
-        topRatedMovies = movieList;
-      });
-    }).onError((error) {
-      debugPrint(error.toString());
-    });
-    // .then((movieList) {
-    //   setState(() {
-    //     topRatedMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-
-    /// Genres
-    movieModel.getGenres().then((genreList) {
-      setState(() {
-        genres = genreList;
-      });
-
-      /// Movies By Genre
-      // _getMoviesByGenre(genres?.first.id ?? 1);
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
-
-    /// Genres from Database
-    movieModel.getGenresFromDatabase().then((genreList) {
-      setState(() {
-        genres = genreList;
-      });
-
-      /// Movies By Genre
-      // _getMoviesByGenre(genres?.first.id ?? 1);
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
-
-    /// Actors
-    movieModel.getActors(1).then((actorList) {
-      setState(() {
-        actors = actorList;
-      });
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
-
-    /// Actors From
-    movieModel.getActorsFromDatabase().then((actorList) {
-      setState(() {
-        actors = actorList;
-      });
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
-
-    super.initState();
-  }
-
-  // void _getMoviesByGenre(int genreId) {
-  //   movieModel.getMoviesByGenre(genreId).then((movieList) {
-  //     setState(() {
-  //       moviesByGenre = movieList;
-  //     });
-  //   }).catchError((error) {
-  //     debugPrint(error.toString());
-  //   });
-  // }
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -216,7 +63,8 @@ class _HomePageState extends State<HomePage> {
                   builder: (BuildContext context, Widget? child,
                       MovieModelImpl model) {
                     return BestPopularMoviesAndSerialsSectionView(
-                        (movieId) => _navigateToDetailScreen(context, movieId),
+                        (movieId) =>
+                            _navigateToDetailScreen(context, movieId, model),
                         model.getNowPlayingMoviesList);
                   },
                 ),
@@ -228,7 +76,8 @@ class _HomePageState extends State<HomePage> {
                   builder: (BuildContext context, Widget? child,
                       MovieModelImpl model) {
                     return GenreSectionView(
-                      (movieId) => _navigateToDetailScreen(context, movieId),
+                      (movieId) =>
+                          _navigateToDetailScreen(context, movieId, model),
                       genreList: model.getGenresList,
                       moviesByGenreList: model.getmoviesByGenre,
                       onChooseGenre: (genreID) {
@@ -273,14 +122,14 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  void _navigateToDetailScreen(BuildContext context, int? movieId) {
+  void _navigateToDetailScreen(
+      BuildContext context, int? movieId, MovieModelImpl model) {
+    model.getCreditsByMovie(movieId ?? 0);
+    model.getMovieDetails(movieId ?? 0);
+    model.getMovieDetailsFromDatabase(movieId ?? 0);
     if (movieId != null) {
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => MovieDetailPage(
-                    movieId: movieId,
-                  )));
+          context, MaterialPageRoute(builder: (context) => MovieDetailPage()));
     }
   }
 }
