@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:movie_app_ui/blocs/home_bloc.dart';
+import 'package:movie_app_ui/blocs/movie_detail_bloc.dart';
 import 'package:movie_app_ui/data.vos/models/movie_model.dart';
 import 'package:movie_app_ui/data.vos/models/movie_model_impl.dart';
 import 'package:movie_app_ui/data.vos/vos/actor_vo.dart';
@@ -25,88 +27,134 @@ class MovieDetailPage extends StatefulWidget {
 }
 
 class _MovieDetailPageState extends State<MovieDetailPage> {
-  final List<String> genreList = ["Actions", "Adventure", "Thriller"];
-  //State Variables
-  final MovieModel _movieModel = MovieModelImpl();
-  List<ActorVO>? casts = [];
-  List<ActorVO>? crews = [];
-  MovieVO? movieDetail;
+//   final List<String> genreList = ["Actions", "Adventure", "Thriller"];
+//   //State Variables
+//   final MovieModel _movieModel = MovieModelImpl();
+//   List<ActorVO>? casts = [];
+//   List<ActorVO>? crews = [];
+//   MovieVO? movieDetail;
+//   @override
+//   void initState() {
+//     // Movie Detail From Network
+//     // _movieModel.getMovieDetails(widget.movieId)?.then((movie) {
+//     //   setState(() {
+//     //     movieDetail = movie;
+//     //   });
+//     // }).catchError((error) {
+//     //   debugPrint(error.toString());
+//     // });
+// // Movie Detail From Database
+//     _movieModel.getMovieDetailsFromDatabase(widget.movieId)?.then((movie) {
+//       setState(() {
+//         movieDetail = movie;
+//       });
+//     }).catchError((error) {
+//       debugPrint(error.toString());
+//     });
+//     _movieModel.getCreditsByMovie(widget.movieId).then((creditsByMovie) {
+//       setState(() {
+//         casts = creditsByMovie.first;
+//         crews = creditsByMovie[1];
+//       });
+//     }).catchError((error) {
+//       debugPrint(error.toString());
+//     });
+//     super.initState();
+//   }
+
+  late MovieDetailBloc _bloc;
   @override
   void initState() {
-    // Movie Detail From Network
-    // _movieModel.getMovieDetails(widget.movieId)?.then((movie) {
-    //   setState(() {
-    //     movieDetail = movie;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-
-// Movie Detail From Database
-    _movieModel.getMovieDetailsFromDatabase(widget.movieId)?.then((movie) {
-      setState(() {
-        movieDetail = movie;
-      });
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
-
-    _movieModel.getCreditsByMovie(widget.movieId).then((creditsByMovie) {
-      setState(() {
-        casts = creditsByMovie.first;
-        crews = creditsByMovie[1];
-      });
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
+    _bloc = MovieDetailBloc(widget.movieId);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _bloc.disposeStream();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: HOME_SCREEN_BACKGROUND_COLOR,
-        child: CustomScrollView(slivers: [
-          MovieDetailsSliverAppBarView(
-            () => Navigator.pop(context),
-            movieDetail: movieDetail,
-          ),
-          SliverList(
-              delegate: SliverChildListDelegate([
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-              child: TrailerSection(
-                genreList: movieDetail?.getGenreListAsStringList() ?? [],
-                storyLine: movieDetail?.overview ?? "",
-              ),
-            ),
-            const SizedBox(
-              height: MARGIN_LARGE,
-            ),
-            ActorsAndCreatorsSectionView(
-              MOVIE_DETAILS_SCREEN_ACTORS_TITLE,
-              "",
-              seeMoreButtonVisibility: false,
-              actorsList: casts,
-            ),
-            const SizedBox(
-              height: MARGIN_LARGE,
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-              child: AboutFilmSectionView(movieDetail: movieDetail),
-            ),
-            const SizedBox(
-              height: MARGIN_LARGE,
-            ),
-            ActorsAndCreatorsSectionView(
-              MOVIE_DETAILS_SCREEN_CREATORS_TITLE,
-              MOVIE_DETAILS_SCREEN_CREATORS_SEE_MORE,
-              actorsList: crews,
-            )
-          ]))
-        ]),
+      body: StreamBuilder(
+        stream: _bloc.movieStreamController.stream.asBroadcastStream(),
+        builder: (BuildContext context, AsyncSnapshot<MovieVO> snapshot) {
+          if (snapshot.hasData) {
+            return Container(
+              color: HOME_SCREEN_BACKGROUND_COLOR,
+              child: CustomScrollView(slivers: [
+                MovieDetailsSliverAppBarView(
+                  () => Navigator.pop(context),
+                  movieDetail: snapshot.data,
+                ),
+                SliverList(
+                    delegate: SliverChildListDelegate([
+                  Container(
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
+                    child: TrailerSection(
+                      // genreList: ["aa", 'bb'],
+                      // storyLine: "rereore",
+                      genreList: snapshot.data?.genres
+                              ?.map((e) => e.name ?? "")
+                              .toList() ??
+                          [],
+                      storyLine: snapshot.data!.status ?? "",
+                    ),
+                  ),
+                  const SizedBox(
+                    height: MARGIN_LARGE,
+                  ),
+                  StreamBuilder(
+                    stream:
+                        _bloc.actorStreamController.stream.asBroadcastStream(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<ActorVO>> actorsSnapShot) {
+                      return ActorsAndCreatorsSectionView(
+                        MOVIE_DETAILS_SCREEN_ACTORS_TITLE,
+                        "",
+                        seeMoreButtonVisibility: false,
+                        actorsList: actorsSnapShot.data,
+                      );
+                    },
+                  ),
+                  const SizedBox(
+                    height: MARGIN_LARGE,
+                  ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
+                    child: AboutFilmSectionView(movieDetail: snapshot.data),
+                  ),
+                  const SizedBox(
+                    height: MARGIN_LARGE,
+                  ),
+                  StreamBuilder(
+                    stream: _bloc.creatorsStreamController.stream
+                        .asBroadcastStream(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<ActorVO>> creatorSnapShot) {
+                      if (creatorSnapShot.hasData &&
+                          creatorSnapShot.data!.isNotEmpty) {
+                        return ActorsAndCreatorsSectionView(
+                          MOVIE_DETAILS_SCREEN_CREATORS_TITLE,
+                          MOVIE_DETAILS_SCREEN_CREATORS_SEE_MORE,
+                          actorsList: creatorSnapShot.data,
+                        );
+                      } else {
+                        return Container();
+                      }
+                    },
+                  )
+                ]))
+              ]),
+            );
+          } else {
+            return Container();
+          }
+        },
       ),
     );
   }

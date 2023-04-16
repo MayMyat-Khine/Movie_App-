@@ -21,6 +21,7 @@ class ActorsAndCreatorsSectionView extends StatelessWidget {
       padding:
           const EdgeInsets.only(top: MARGIN_MEDIUM_2, bottom: MARGIN_XXLARGE),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
@@ -37,6 +38,8 @@ class ActorsAndCreatorsSectionView extends StatelessWidget {
             height: BEST_ACTORS_HEIGHT,
             child: ListView(
                 scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                // physics: NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.only(left: MARGIN_MEDIUM_2),
                 children: actorsList
                         ?.map((actor) => ActorsView(actor: actor))

@@ -26,7 +26,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  HomeBloc _bloc = HomeBloc();
+  final HomeBloc _bloc = HomeBloc();
 // // State Variables
 //   MovieModel movieModel = MovieModelImpl();
 //   List<MovieVO>? nowPlayingMovies;
@@ -69,6 +69,11 @@ class _HomePageState extends State<HomePage> {
 //     // }).catchError((error) {
 //     //   debugPrint(error.toString());
 //     // });
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
 //     /// Now Playing Movies From Database
 //     movieModel.getNowPlayingMoviesFromDatabase().listen((movieList) {
@@ -155,6 +160,11 @@ class _HomePageState extends State<HomePage> {
 //   //     debugPrint(error.toString());
 //   //   });
 //   // }
+  @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
