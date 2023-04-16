@@ -85,9 +85,10 @@ class MovieModelImpl extends MovieModel {
 
   @override
   Future<List<MovieVO>>? getMoviesByGenre(int genreId) {
-    _dataAgent.getMoviesByGenre(genreId).then((value) {
+    return _dataAgent.getMoviesByGenre(genreId).then((value) {
       getmoviesByGenre = value;
       notifyListeners();
+      return value ?? [];
     });
   }
 
