@@ -10,7 +10,7 @@ import 'package:movie_app_ui/persistence/daos/movie_dao.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 class MovieModelImpl extends MovieModel {
-  MovieDateAgent _dataAgent =
+  final MovieDateAgent _dataAgent =
       RetrofitDataAgentImpl(); //MovieDateAgent as a dependency
 
   static final MovieModelImpl _singleton = MovieModelImpl._internal();
