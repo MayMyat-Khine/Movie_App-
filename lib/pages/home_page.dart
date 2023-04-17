@@ -1,15 +1,12 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:movie_app_ui/data.vos/models/movie_model.dart';
-import 'package:movie_app_ui/data.vos/models/movie_model_impl.dart';
-import 'package:movie_app_ui/data.vos/vos/actor_vo.dart';
 import 'package:movie_app_ui/data.vos/vos/genre_vo.dart';
 import 'package:movie_app_ui/data.vos/vos/movie_vo.dart';
+import 'package:movie_app_ui/provider/home_provider.dart';
 import 'package:movie_app_ui/pages/movie_details_page.dart';
 import 'package:movie_app_ui/resources/colors.dart';
 import 'package:movie_app_ui/resources/dimens.dart';
 import 'package:movie_app_ui/resources/strings.dart';
-import 'package:movie_app_ui/views.dart/actors_view.dart';
 import 'package:movie_app_ui/views.dart/banner_view.dart';
 import 'package:movie_app_ui/views.dart/movie_view.dart';
 import 'package:movie_app_ui/views.dart/show_case_view.dart';
@@ -17,260 +14,113 @@ import 'package:movie_app_ui/widgets/actors_and_creators_section_view.dart';
 import 'package:movie_app_ui/widgets/see_more_text.dart';
 import 'package:movie_app_ui/widgets/title_text.dart';
 import 'package:movie_app_ui/widgets/title_text_with_see_more_view.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'package:provider/provider.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  List<String> genreList = [
-    "Action",
-    "Adventure",
-    "Horror",
-    "Comedy",
-    "Thriller",
-    "Drama"
-  ];
-
-// State Variables
-  MovieModel movieModel = MovieModelImpl();
-  List<MovieVO>? nowPlayingMovies;
-  List<MovieVO>? popularMovies;
-  List<MovieVO>? topRatedMovies;
-  List<MovieVO>? moviesByGenre;
-  List<GenreVO>? genres;
-  List<ActorVO>? actors;
-
-  @override
-  void initState() {
-    /// Popular Movies
-    // movieModel.getPopularMovies(1).then((movieList) {
-    //   setState(() {
-    //     popularMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-
-    /// Popular Movies From Database
-    movieModel.getPopularMoviesFromDatabase().listen((movieList) {
-      setState(() {
-        popularMovies = movieList;
-      });
-    }).onError((error) {
-      debugPrint(error.toString());
-    });
-    // .then((movieList) {
-    //   setState(() {
-    //     popularMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-
-    // / Now Playing Movies
-    // movieModel.getNowPlayingMovies(1).then((movieList) {
-    //   setState(() {
-    //     nowPlayingMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-
-    /// Now Playing Movies From Database
-    movieModel.getNowPlayingMoviesFromDatabase().listen((movieList) {
-      setState(() {
-        nowPlayingMovies = movieList;
-      });
-    }).onError((error) {
-      debugPrint(error.toString());
-    });
-    // .then((movieList) {
-    //   setState(() {
-    //     nowPlayingMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-
-    /// Top Rated Movies
-    // movieModel.getTopRatedMovies(1).then((movieList) {
-    //   setState(() {
-    //     topRatedMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-
-    /// Top Rated Movies From Database
-    movieModel.getTopRatedMoviesFromDatabase().listen((movieList) {
-      setState(() {
-        topRatedMovies = movieList;
-      });
-    }).onError((error) {
-      debugPrint(error.toString());
-    });
-    // .then((movieList) {
-    //   setState(() {
-    //     topRatedMovies = movieList;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-
-    /// Genres
-    movieModel.getGenres().then((genreList) {
-      setState(() {
-        genres = genreList;
-      });
-
-      /// Movies By Genre
-      // _getMoviesByGenre(genres?.first.id ?? 1);
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
-
-    /// Genres from Database
-    movieModel.getGenresFromDatabase().then((genreList) {
-      setState(() {
-        genres = genreList;
-      });
-
-      /// Movies By Genre
-      // _getMoviesByGenre(genres?.first.id ?? 1);
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
-
-    /// Actors
-    movieModel.getActors(1).then((actorList) {
-      setState(() {
-        actors = actorList;
-      });
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
-
-    /// Actors From
-    movieModel.getActorsFromDatabase().then((actorList) {
-      setState(() {
-        actors = actorList;
-      });
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
-
-    super.initState();
-  }
-
-  // void _getMoviesByGenre(int genreId) {
-  //   movieModel.getMoviesByGenre(genreId).then((movieList) {
-  //     setState(() {
-  //       moviesByGenre = movieList;
-  //     });
-  //   }).catchError((error) {
-  //     debugPrint(error.toString());
-  //   });
-  // }
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PRIMARY_BACKGROUND_COLOR,
-          leading: const Icon(Icons.menu),
-          centerTitle: true,
-          actions: const [
-            Padding(
-              padding: EdgeInsets.only(
-                  left: 0, top: 0, bottom: 0, right: MARGIN_MEDIUM_2),
-              child: Icon(
-                Icons.search,
-              ),
-            )
-          ],
-          title: const Text(
-            APP_BAR_TITLE,
-            style: TextStyle(fontWeight: FontWeight.w700),
-          ),
-        ),
-        body: Container(
-          color: HOME_SCREEN_BACKGROUND_COLOR,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                ScopedModelDescendant<MovieModelImpl>(
-                  builder: (BuildContext context, Widget? child,
-                      MovieModelImpl model) {
-                    return BannerSectionView(
-                      movieList: model.getPopularMoviesList,
-                    );
-                  },
+    return ChangeNotifierProvider(
+      create: (context) => HomeProvider(),
+      child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: PRIMARY_BACKGROUND_COLOR,
+            leading: const Icon(Icons.menu),
+            centerTitle: true,
+            actions: const [
+              Padding(
+                padding: EdgeInsets.only(
+                    left: 0, top: 0, bottom: 0, right: MARGIN_MEDIUM_2),
+                child: Icon(
+                  Icons.search,
                 ),
-                const SizedBox(
-                  height: MARGIN_LARGE,
-                ),
-                ScopedModelDescendant<MovieModelImpl>(
-                  builder: (BuildContext context, Widget? child,
-                      MovieModelImpl model) {
-                    return BestPopularMoviesAndSerialsSectionView(
-                        (movieId) => _navigateToDetailScreen(context, movieId),
-                        model.getNowPlayingMoviesList);
-                  },
-                ),
-                CheckMovieShowTimeSectionView(),
-                const SizedBox(
-                  height: MARGIN_LARGE,
-                ),
-                ScopedModelDescendant<MovieModelImpl>(
-                  builder: (BuildContext context, Widget? child,
-                      MovieModelImpl model) {
-                    return GenreSectionView(
-                      (movieId) => _navigateToDetailScreen(context, movieId),
-                      genreList: model.getGenresList,
-                      moviesByGenreList: model.getmoviesByGenre,
-                      onChooseGenre: (genreID) {
-                        if (genreID != null) {
-                          model.getMoviesByGenre(genreID);
-                        }
-                      },
-                    );
-                  },
-                ),
-                // HorizontalMovieListView(),
-                const SizedBox(
-                  height: MARGIN_LARGE,
-                ),
-                ScopedModelDescendant<MovieModelImpl>(
-                  builder: (BuildContext context, Widget? child,
-                      MovieModelImpl model) {
-                    return ShowCasesSection(
-                      movieList: model.getTopRatedMoviesList,
-                    );
-                  },
-                ),
-                const SizedBox(
-                  height: MARGIN_LARGE,
-                ),
-                ScopedModelDescendant<MovieModelImpl>(
-                  builder: (BuildContext context, Widget? child,
-                      MovieModelImpl model) {
-                    return ActorsAndCreatorsSectionView(
-                      BEST_ACTORS_TITLE,
-                      BEST_ACTORS_SEE_MORE,
-                      actorsList: model.getActorsList,
-                    );
-                  },
-                ),
-                const SizedBox(
-                  height: MARGIN_LARGE,
-                ),
-              ],
+              )
+            ],
+            title: const Text(
+              APP_BAR_TITLE,
+              style: TextStyle(fontWeight: FontWeight.w700),
             ),
           ),
-        ));
+          body: Container(
+            color: HOME_SCREEN_BACKGROUND_COLOR,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Consumer(
+                    builder: (BuildContext context, HomeProvider value,
+                        Widget? child) {
+                      return BannerSectionView(
+                        movieList: value.popularMovies,
+                      );
+                    },
+                  ),
+                  const SizedBox(
+                    height: MARGIN_LARGE,
+                  ),
+                  Consumer(
+                    builder: (BuildContext context, HomeProvider value,
+                        Widget? child) {
+                      return BestPopularMoviesAndSerialsSectionView(
+                          (movieId) =>
+                              _navigateToDetailScreen(context, movieId),
+                          value.nowPlayingMovies);
+                    },
+                  ),
+
+                  CheckMovieShowTimeSectionView(),
+                  const SizedBox(
+                    height: MARGIN_LARGE,
+                  ),
+                  Consumer(
+                    builder: (BuildContext context, HomeProvider value,
+                        Widget? child) {
+                      return GenreSectionView(
+                        (movieId) => _navigateToDetailScreen(context, movieId),
+                        genreList: value.genres,
+                        moviesByGenreList: value.moviesByGenre,
+                        onChooseGenre: (genreID) {
+                          if (genreID != null) {
+                            HomeProvider provider = Provider.of<HomeProvider>(
+                                context,
+                                listen: false);
+                            provider.onTapGenre(genreID);
+                          }
+                        },
+                      );
+                    },
+                  ),
+                  // HorizontalMovieListView(),
+                  const SizedBox(
+                    height: MARGIN_LARGE,
+                  ),
+                  Consumer(
+                    builder: (BuildContext context, HomeProvider value,
+                        Widget? child) {
+                      return ShowCasesSection(
+                        movieList: value.topRatedMovies,
+                      );
+                    },
+                  ),
+                  const SizedBox(
+                    height: MARGIN_LARGE,
+                  ),
+                  Consumer(
+                    builder: (BuildContext context, HomeProvider value,
+                        Widget? child) {
+                      return ActorsAndCreatorsSectionView(
+                        BEST_ACTORS_TITLE,
+                        BEST_ACTORS_SEE_MORE,
+                        actorsList: value.actors,
+                      );
+                    },
+                  ),
+                  const SizedBox(
+                    height: MARGIN_LARGE,
+                  ),
+                ],
+              ),
+            ),
+          )),
+    );
   }
 
   void _navigateToDetailScreen(BuildContext context, int? movieId) {

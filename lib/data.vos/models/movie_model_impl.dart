@@ -19,20 +19,12 @@ class MovieModelImpl extends MovieModel {
     return _singleton;
   }
 
-  MovieModelImpl._internal() {}
+  MovieModelImpl._internal();
 
   // Daos
   final MovieDao _movieDao = MovieDao();
   final GenreDao _genreDao = GenreDao();
   final ActorDao _actorDao = ActorDao();
-
-// State Variables
-  List<MovieVO>? getNowPlayingMoviesList;
-  List<MovieVO>? getPopularMoviesList;
-  List<MovieVO>? getTopRatedMoviesList;
-  List<MovieVO>? getmoviesByGenre;
-  List<GenreVO>? getGenresList;
-  List<ActorVO>? getActorsList;
 
   @override
   void getNowPlayingMovies(int page) {
@@ -45,8 +37,6 @@ class MovieModelImpl extends MovieModel {
           return movie;
         }).toList();
         _movieDao.saveMovieList(nowPlayingMovies);
-        getNowPlayingMoviesList = nowPlayingMovies;
-        notifyListeners();
       }
       // return movies;
     });
@@ -58,8 +48,6 @@ class MovieModelImpl extends MovieModel {
       if (actorList != null && actorList != []) {
         _actorDao.saveActorList(actorList);
       }
-      getActorsList = actorList;
-      notifyListeners();
 
       return actorList;
     });
@@ -70,14 +58,9 @@ class MovieModelImpl extends MovieModel {
     return _dataAgent.getGenres().then((genreList) {
       if (genreList != null && genreList != []) {
         _genreDao.saveGenreList(genreList);
-        getGenresList = genreList;
 
-        getMoviesByGenre(genreList.first.id ?? 1)?.then((value) {
-          getmoviesByGenre = value;
-          notifyListeners();
-        });
+        getMoviesByGenre(genreList.first.id ?? 1);
       }
-      notifyListeners();
 
       return genreList;
     });
@@ -85,9 +68,8 @@ class MovieModelImpl extends MovieModel {
 
   @override
   Future<List<MovieVO>>? getMoviesByGenre(int genreId) {
-    _dataAgent.getMoviesByGenre(genreId).then((value) {
-      getmoviesByGenre = value;
-      notifyListeners();
+    return _dataAgent.getMoviesByGenre(genreId).then((value) {
+      return value ?? [];
     });
   }
 
@@ -102,8 +84,6 @@ class MovieModelImpl extends MovieModel {
           return movie;
         }).toList();
         _movieDao.saveMovieList(popularMovies);
-        getPopularMoviesList = popularMovies;
-        notifyListeners();
       }
       // return movies;
     });
@@ -120,8 +100,6 @@ class MovieModelImpl extends MovieModel {
           return movie;
         }).toList();
         _movieDao.saveMovieList(topRatedMovies);
-        getTopRatedMoviesList = topRatedMovies;
-        notifyListeners();
       }
       // return movies;
     });

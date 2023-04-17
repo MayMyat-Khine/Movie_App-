@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:movie_app_ui/data.vos/models/movie_model.dart';
 import 'package:movie_app_ui/data.vos/models/movie_model_impl.dart';
@@ -79,6 +80,10 @@ class HomeProvider extends ChangeNotifier {
     }).catchError((error) {
       debugPrint(error.toString());
     });
+  }
+
+  void onTapGenre(genreId) {
+    getMoviesByGenre(genreId);
   }
 
   void getMoviesByGenre(int genreId) {
