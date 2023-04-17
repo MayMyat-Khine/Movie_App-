@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app_ui/data.vos/vos/actor_vo.dart';
 import 'package:movie_app_ui/data.vos/vos/movie_vo.dart';
 import 'package:movie_app_ui/constants.dart/api_constants.dart';
 import 'package:movie_app_ui/provider/movie_detail_provider.dart';
@@ -23,70 +24,59 @@ class MovieDetailPage extends StatelessWidget {
         body: Container(
           color: HOME_SCREEN_BACKGROUND_COLOR,
           child: CustomScrollView(slivers: [
-            Consumer(
-              builder: (BuildContext context, MovieDetailProvider value,
-                  Widget? child) {
-                return MovieDetailsSliverAppBarView(
-                  () => Navigator.pop(context),
-                  movieDetail: value.movieDetail,
-                );
-              },
-            ),
+            Selector<MovieDetailProvider, MovieVO?>(
+                builder: (context, movieDetail, child) =>
+                    MovieDetailsSliverAppBarView(
+                      () => Navigator.pop(context),
+                      movieDetail: movieDetail,
+                    ),
+                selector: (context, bloc) => bloc.movieDetail),
             SliverList(
                 delegate: SliverChildListDelegate([
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-                child: Consumer(
-                  builder: (BuildContext context, MovieDetailProvider value,
-                      Widget? child) {
-                    return TrailerSection(
-                      genreList:
-                          value.movieDetail?.getGenreListAsStringList() ?? [],
-                      storyLine: value.movieDetail?.overview ?? "",
-                    );
-                  },
-                ),
+                child: Selector<MovieDetailProvider, MovieVO?>(
+                    builder: (context, movieDetail, child) => TrailerSection(
+                          genreList:
+                              movieDetail?.getGenreListAsStringList() ?? [],
+                          storyLine: movieDetail?.overview ?? "",
+                        ),
+                    selector: (context, bloc) => bloc.movieDetail),
               ),
               const SizedBox(
                 height: MARGIN_LARGE,
               ),
-              Consumer(
-                builder: (BuildContext context, MovieDetailProvider value,
-                    Widget? child) {
-                  return ActorsAndCreatorsSectionView(
-                    MOVIE_DETAILS_SCREEN_ACTORS_TITLE,
-                    "",
-                    seeMoreButtonVisibility: false,
-                    actorsList: value.casts,
-                  );
-                },
-              ),
+              Selector<MovieDetailProvider, List<ActorVO>?>(
+                  builder: (context, casts, child) =>
+                      ActorsAndCreatorsSectionView(
+                        MOVIE_DETAILS_SCREEN_ACTORS_TITLE,
+                        "",
+                        seeMoreButtonVisibility: false,
+                        actorsList: casts,
+                      ),
+                  selector: (context, bloc) => bloc.casts),
               const SizedBox(
                 height: MARGIN_LARGE,
               ),
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-                child: Consumer(
-                  builder: (BuildContext context, MovieDetailProvider value,
-                      Widget? child) {
-                    return AboutFilmSectionView(movieDetail: value.movieDetail);
-                  },
-                ),
+                child: Selector<MovieDetailProvider, MovieVO?>(
+                    builder: (context, movieDetail, child) =>
+                        AboutFilmSectionView(movieDetail: movieDetail),
+                    selector: (context, bloc) => bloc.movieDetail),
               ),
               const SizedBox(
                 height: MARGIN_LARGE,
               ),
-              Consumer(
-                builder: (BuildContext context, MovieDetailProvider value,
-                    Widget? child) {
-                  return ActorsAndCreatorsSectionView(
-                    MOVIE_DETAILS_SCREEN_CREATORS_TITLE,
-                    MOVIE_DETAILS_SCREEN_CREATORS_SEE_MORE,
-                    actorsList: value.crews,
-                  );
-                },
-              ),
+              Selector<MovieDetailProvider, List<ActorVO>?>(
+                  builder: (context, crews, child) =>
+                      ActorsAndCreatorsSectionView(
+                        MOVIE_DETAILS_SCREEN_CREATORS_TITLE,
+                        MOVIE_DETAILS_SCREEN_CREATORS_SEE_MORE,
+                        actorsList: crews,
+                      ),
+                  selector: (context, bloc) => bloc.crews),
             ]))
           ]),
         ),
