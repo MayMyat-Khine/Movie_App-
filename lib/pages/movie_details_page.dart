@@ -71,11 +71,13 @@ class MovieDetailPage extends StatelessWidget {
               ),
               Selector<MovieDetailProvider, List<ActorVO>?>(
                   builder: (context, crews, child) =>
-                      ActorsAndCreatorsSectionView(
-                        MOVIE_DETAILS_SCREEN_CREATORS_TITLE,
-                        MOVIE_DETAILS_SCREEN_CREATORS_SEE_MORE,
-                        actorsList: crews,
-                      ),
+                      crews == null && crews!.isNotEmpty
+                          ? ActorsAndCreatorsSectionView(
+                              MOVIE_DETAILS_SCREEN_CREATORS_TITLE,
+                              MOVIE_DETAILS_SCREEN_CREATORS_SEE_MORE,
+                              actorsList: crews,
+                            )
+                          : Container(),
                   selector: (context, bloc) => bloc.crews),
             ]))
           ]),
