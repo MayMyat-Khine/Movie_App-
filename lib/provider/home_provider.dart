@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:movie_app_ui/data.vos/models/movie_model.dart';
 import 'package:movie_app_ui/data.vos/models/movie_model_impl.dart';
@@ -18,6 +17,8 @@ class HomeProvider extends ChangeNotifier {
   /// Model
   MovieModel movieModel = MovieModelImpl();
 
+// NowPlaying Page Index
+  int _nowPlayingPageIndex = 1;
   HomeProvider() {
     /// Popular Movies From Database
     movieModel.getPopularMoviesFromDatabase().listen((movieList) {
@@ -93,5 +94,10 @@ class HomeProvider extends ChangeNotifier {
     }).catchError((error) {
       debugPrint(error.toString());
     });
+  }
+
+  void onNowPlayingMovieListEndReached() {
+    _nowPlayingPageIndex++;
+    movieModel.getNowPlayingMovies(_nowPlayingPageIndex);
   }
 }

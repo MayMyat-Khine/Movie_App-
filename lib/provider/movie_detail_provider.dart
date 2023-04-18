@@ -9,6 +9,7 @@ class MovieDetailProvider extends ChangeNotifier {
   List<ActorVO>? casts = [];
   List<ActorVO>? crews = [];
   MovieVO? movieDetail;
+  List<MovieVO>? relatedMovies = [];
 
   /// Model
   final MovieModel _movieModel = MovieModelImpl();
@@ -17,18 +18,19 @@ class MovieDetailProvider extends ChangeNotifier {
     // Movie Detail From Network
     _movieModel.getMovieDetails(movieId)?.then((movie) {
       movieDetail = movie;
+      getRelatedMovies(movie.genres?.first.id ?? 0);
       notifyListeners();
     }).catchError((error) {
       debugPrint(error.toString());
     });
 
 // Movie Detail From Database
-    _movieModel.getMovieDetailsFromDatabase(movieId)?.then((movie) {
-      movieDetail = movie;
-      notifyListeners();
-    }).catchError((error) {
-      debugPrint(error.toString());
-    });
+    // _movieModel.getMovieDetailsFromDatabase(movieId)?.then((movie) {
+    //   movieDetail = movie;
+    //   notifyListeners();
+    // }).catchError((error) {
+    //   debugPrint(error.toString());
+    // });
 
     _movieModel.getCreditsByMovie(movieId).then((creditsByMovie) {
       casts = creditsByMovie.first;
@@ -36,6 +38,13 @@ class MovieDetailProvider extends ChangeNotifier {
       notifyListeners();
     }).catchError((error) {
       debugPrint(error.toString());
+    });
+  }
+
+  void getRelatedMovies(int generId) {
+    _movieModel.getMoviesByGenre(generId)?.then((value) {
+      relatedMovies = value;
+      notifyListeners();
     });
   }
 }

@@ -13,6 +13,7 @@ import 'package:movie_app_ui/views.dart/movie_view.dart';
 import 'package:movie_app_ui/views.dart/show_case_view.dart';
 import 'package:movie_app_ui/widgets/actors_and_creators_section_view.dart';
 import 'package:movie_app_ui/widgets/see_more_text.dart';
+import 'package:movie_app_ui/widgets/title_and_horizontal_movie_list_view.dart';
 import 'package:movie_app_ui/widgets/title_text.dart';
 import 'package:movie_app_ui/widgets/title_text_with_see_more_view.dart';
 import 'package:provider/provider.dart';
@@ -58,11 +59,17 @@ class HomePage extends StatelessWidget {
                   Selector<HomeProvider, List<MovieVO>?>(
                       builder: (context, nowPlayingMovies, child) =>
                           BestPopularMoviesAndSerialsSectionView(
-                              (movieId) =>
-                                  _navigateToDetailScreen(context, movieId),
-                              nowPlayingMovies),
+                            (movieId) =>
+                                _navigateToDetailScreen(context, movieId),
+                            nowPlayingMovies,
+                            title: MAIN_SCREEN_BEST_POPULAR_MOVIES_AND_SERIALS,
+                            onListEndReached: () {
+                              var bloc = Provider.of<HomeProvider>(context,
+                                  listen: false);
+                              bloc.onNowPlayingMovieListEndReached();
+                            },
+                          ),
                       selector: (context, bloc) => bloc.nowPlayingMovies),
-
                   CheckMovieShowTimeSectionView(),
                   const SizedBox(
                     height: MARGIN_LARGE,
@@ -87,26 +94,6 @@ class HomePage extends StatelessWidget {
                                   ),
                               selector: (context, bloc) => bloc.moviesByGenre),
                       selector: (context, bloc) => bloc.genres),
-
-                  // Consumer(
-                  //   builder: (BuildContext context, HomeProvider value,
-                  //       Widget? child) {
-                  //     return GenreSectionView(
-                  //       (movieId) => _navigateToDetailScreen(context, movieId),
-                  //       genreList: value.genres,
-                  //       moviesByGenreList: value.moviesByGenre,
-                  //       onChooseGenre: (genreID) {
-                  //         if (genreID != null) {
-                  //           HomeProvider provider = Provider.of<HomeProvider>(
-                  //               context,
-                  //               listen: false);
-                  //           provider.onTapGenre(genreID);
-                  //         }
-                  //       },
-                  //     );
-                  //   },
-                  // ),
-                  // HorizontalMovieListView(),
                   const SizedBox(
                     height: MARGIN_LARGE,
                   ),
@@ -116,11 +103,9 @@ class HomePage extends StatelessWidget {
                             movieList: topRatedMovies,
                           ),
                       selector: (context, bloc) => bloc.topRatedMovies),
-
                   const SizedBox(
                     height: MARGIN_LARGE,
                   ),
-
                   Selector<HomeProvider, List<ActorVO>?>(
                       builder: (context, actors, child) =>
                           ActorsAndCreatorsSectionView(
@@ -129,7 +114,6 @@ class HomePage extends StatelessWidget {
                             actorsList: actors,
                           ),
                       selector: (context, bloc) => bloc.actors),
-
                   const SizedBox(
                     height: MARGIN_LARGE,
                   ),
@@ -195,6 +179,7 @@ class GenreSectionView extends StatelessWidget {
           child: HorizontalMovieListView(
             onTapMovie: (movieId) => onTapMovie(movieId),
             movieList: moviesByGenreList,
+            onListEndReached: () {},
           ),
         )
       ],
@@ -269,34 +254,6 @@ class ShowCasesSection extends StatelessWidget {
   }
 }
 
-class BestPopularMoviesAndSerialsSectionView extends StatelessWidget {
-  final Function(int?) onTapMovie;
-  final List<MovieVO>? nowPlayingMovieList;
-  const BestPopularMoviesAndSerialsSectionView(
-      this.onTapMovie, this.nowPlayingMovieList,
-      {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(left: MARGIN_MEDIUM_2),
-          child: TitleText(MAIN_SCREEN_BEST_POPULAR_MOVIES_AND_SERIALS),
-        ),
-        const SizedBox(
-          height: MARGIN_MEDIUM_2,
-        ),
-        HorizontalMovieListView(
-          onTapMovie: (movieId) => onTapMovie(movieId),
-          movieList: nowPlayingMovieList,
-        ),
-      ],
-    );
-  }
-}
-
 class BannerSectionView extends StatefulWidget {
   final List<MovieVO>? movieList;
   BannerSectionView({required this.movieList});
@@ -340,31 +297,6 @@ class _BannerSectionViewState extends State<BannerSectionView> {
                   activeColor: PLAY_BUTTON_COLOR)),
         )
       ],
-    );
-  }
-}
-
-class HorizontalMovieListView extends StatelessWidget {
-  final Function(int?) onTapMovie;
-  final List<MovieVO>? movieList;
-  HorizontalMovieListView({required this.onTapMovie, required this.movieList});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: MOVIE_LIST_HEIGHT,
-      child: movieList != null
-          ? ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.only(left: MARGIN_MEDIUM_2),
-              itemCount: movieList?.length ?? 0,
-              itemBuilder: ((BuildContext context, index) {
-                return MovieView(
-                  onTapMovie: () => onTapMovie(movieList?[index].id),
-                  movie: movieList?[index],
-                );
-              }))
-          : const Center(child: CircularProgressIndicator()),
     );
   }
 }

@@ -9,6 +9,7 @@ import 'package:movie_app_ui/resources/strings.dart';
 import 'package:movie_app_ui/widgets/actors_and_creators_section_view.dart';
 import 'package:movie_app_ui/widgets/gradient_view.dart';
 import 'package:movie_app_ui/widgets/rating_view.dart';
+import 'package:movie_app_ui/widgets/title_and_horizontal_movie_list_view.dart';
 import 'package:movie_app_ui/widgets/title_text.dart';
 import 'package:provider/provider.dart';
 
@@ -79,11 +80,35 @@ class MovieDetailPage extends StatelessWidget {
                             )
                           : Container(),
                   selector: (context, bloc) => bloc.crews),
+              const SizedBox(
+                height: MARGIN_LARGE,
+              ),
+              Selector<MovieDetailProvider, List<MovieVO>?>(
+                selector: (context, bloc) => bloc.relatedMovies,
+                builder: (context, relatedMovies, child) =>
+                    BestPopularMoviesAndSerialsSectionView(
+                  (movieId) => _navigateToDetailScreen(context, movieId),
+                  relatedMovies,
+                  title: MOVIE_DETAILS_RELATED_MOVIES,
+                  onListEndReached: () {},
+                ),
+              )
             ]))
           ]),
         ),
       ),
     );
+  }
+
+  void _navigateToDetailScreen(BuildContext context, int? movieId) {
+    if (movieId != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MovieDetailPage(
+                    movieId: movieId,
+                  )));
+    }
   }
 }
 
