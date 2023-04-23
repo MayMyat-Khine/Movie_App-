@@ -24,8 +24,10 @@ class MovieDetailProvider extends ChangeNotifier {
 
 // Movie Detail From Database
     _movieModel.getMovieDetailsFromDatabase(movieId)?.then((movie) {
-      movieDetail = movie;
-      notifyListeners();
+      if (movie != null) {
+        movieDetail = movie;
+        notifyListeners();
+      }
     }).catchError((error) {
       debugPrint(error.toString());
     });
