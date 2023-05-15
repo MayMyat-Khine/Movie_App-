@@ -68,8 +68,10 @@ class HomeBloc {
 
   void getMoviesByGenreAndRefresh(int id) {
     /// Movie by genre
-    movieModel.getMoviesByGenre(id)?.then((movieList) {
-      moviesByGenreListStreamController.sink.add(movieList);
+    movieModel.getMoviesByGenre(id).then((movieList) {
+      if (movieList != null) {
+        moviesByGenreListStreamController.sink.add(movieList);
+      }
     }).catchError((error) {});
   }
 
