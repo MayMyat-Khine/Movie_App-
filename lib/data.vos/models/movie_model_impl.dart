@@ -6,6 +6,9 @@ import 'package:movie_app_ui/network/data_agents/movie_data_agent.dart';
 import 'package:movie_app_ui/network/data_agents/retrofit_data_agent_impl.dart';
 import 'package:movie_app_ui/persistence/daos/actor_dao.dart';
 import 'package:movie_app_ui/persistence/daos/genre_dao.dart';
+import 'package:movie_app_ui/persistence/daos/impls/actor_dao_imple.dart';
+import 'package:movie_app_ui/persistence/daos/impls/genre_dao_imple.dart';
+import 'package:movie_app_ui/persistence/daos/impls/movie_dao_imple.dart';
 import 'package:movie_app_ui/persistence/daos/movie_dao.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -22,9 +25,18 @@ class MovieModelImpl extends MovieModel {
   MovieModelImpl._internal();
 
   // Daos
-  final MovieDao _movieDao = MovieDao();
-  final GenreDao _genreDao = GenreDao();
-  final ActorDao _actorDao = ActorDao();
+  MovieDao _movieDao = MovieDaoImpl();
+  GenreDao _genreDao = GenreDaoImpl();
+  ActorDao _actorDao = ActorDaoImpl();
+
+  /// For Testing Purpose
+  void setDaosAndDataAgents(MovieDao movieDao, ActorDao actorDao,
+      GenreDao genreDao, MovieDateAgent dateAgent) {
+    _dataAgent = dateAgent;
+    _movieDao = movieDao;
+    _actorDao = actorDao;
+    _genreDao = genreDao;
+  }
 
   @override
   void getNowPlayingMovies(int page) {
@@ -36,6 +48,39 @@ class MovieModelImpl extends MovieModel {
           movie.isTopRated = false;
           return movie;
         }).toList();
+        // nowPlayingMovies.forEach((element) {
+        //   print(element.toJson());
+        //   print(MovieVO(
+        //       element.adult,
+        //       element.backDropPath,
+        //       element.genreIds,
+        //       element.id,
+        //       element.originalLanguage,
+        //       element.originalTitle,
+        //       element.overview,
+        //       element.popularity,
+        //       element.posterPath,
+        //       element.releaseDate,
+        //       element.title,
+        //       element.video,
+        //       element.voteAverage,
+        //       element.voteCount,
+        //       element.belongsToCollection,
+        //       element.budget,
+        //       element.genres,
+        //       element.homepage,
+        //       element.imdbId,
+        //       element.productionCompanies,
+        //       element.productionCountry,
+        //       element.revenue,
+        //       element.runtime,
+        //       element.spokenLanguages,
+        //       element.status,
+        //       element.tagLine,
+        //       element.isNowPlaying,
+        //       element.isTopRated,
+        //       element.isPopular));
+        // });
         _movieDao.saveMovieList(nowPlayingMovies);
       }
       // return movies;
@@ -75,6 +120,7 @@ class MovieModelImpl extends MovieModel {
           movie.isNowPlaying = false;
           movie.isPopular = true;
           movie.isTopRated = false;
+
           return movie;
         }).toList();
         _movieDao.saveMovieList(nowPlayingMovies);
@@ -129,7 +175,7 @@ class MovieModelImpl extends MovieModel {
   }
 
   @override
-  Stream<List<MovieVO>?> getNowPlayingMoviesFromDatabase() {
+  Stream<List<MovieVO>> getNowPlayingMoviesFromDatabase() {
     getNowPlayingMovies(1);
     return _movieDao
         .getAllMoviesEventStream()
@@ -140,7 +186,7 @@ class MovieModelImpl extends MovieModel {
   }
 
   @override
-  Stream<List<MovieVO>?> getPopularMoviesFromDatabase() {
+  Stream<List<MovieVO>> getPopularMoviesFromDatabase() {
     getPopularMovies(1);
     return _movieDao
         .getAllMoviesEventStream()
@@ -156,7 +202,7 @@ class MovieModelImpl extends MovieModel {
   }
 
   @override
-  Stream<List<MovieVO>?> getTopRatedMoviesFromDatabase() {
+  Stream<List<MovieVO>> getTopRatedMoviesFromDatabase() {
     getTopRatedMovies(1);
     return _movieDao
         .getAllMoviesEventStream()
