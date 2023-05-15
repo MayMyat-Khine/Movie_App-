@@ -23,7 +23,11 @@ class HomeBloc {
   /// Models
   MovieModel movieModel = MovieModelImpl();
 
-  HomeBloc() {
+  HomeBloc([MovieModel? movieModell]) {
+    if (movieModell != null) {
+      movieModel = movieModell;
+    }
+
     /// Popular Movie List Database
     movieModel.getPopularMoviesFromDatabase().listen((movieList) {
       popularMovieListStreamController.sink.add(movieList ?? []);
