@@ -19,8 +19,10 @@ class ShowCaseView extends StatelessWidget {
       width: 300,
       child: Stack(children: [
         Positioned.fill(
-            child: Image.network("$IMAGE_BASE_URL${movie?.posterPath ?? ""}",
-                fit: BoxFit.cover)),
+          child: Text("data"),
+          // child: Image.network("$IMAGE_BASE_URL${movie?.posterPath ?? ""}",
+          //     fit: BoxFit.cover)
+        ),
         const Align(
           alignment: Alignment.center,
           child: PlayButtonView(),

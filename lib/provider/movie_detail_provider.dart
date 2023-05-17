@@ -11,9 +11,13 @@ class MovieDetailProvider extends ChangeNotifier {
   MovieVO? movieDetail;
 
   /// Model
-  final MovieModel _movieModel = MovieModelImpl();
+  MovieModel _movieModel = MovieModelImpl();
 
-  MovieDetailProvider(int movieId) {
+  MovieDetailProvider(int movieId, [MovieModel? movieModel]) {
+    if (movieModel != null) {
+      _movieModel = movieModel;
+    }
+
     // Movie Detail From Network
     _movieModel.getMovieDetails(movieId)?.then((movie) {
       movieDetail = movie;

@@ -6,11 +6,14 @@ import 'package:movie_app_ui/network/data_agents/movie_data_agent.dart';
 import 'package:movie_app_ui/network/data_agents/retrofit_data_agent_impl.dart';
 import 'package:movie_app_ui/persistence/daos/actor_dao.dart';
 import 'package:movie_app_ui/persistence/daos/genre_dao.dart';
+import 'package:movie_app_ui/persistence/daos/impls/actor_dao_impl.dart';
+import 'package:movie_app_ui/persistence/daos/impls/genre_dao_impl.dart';
+import 'package:movie_app_ui/persistence/daos/impls/movie_dao_impl.dart';
 import 'package:movie_app_ui/persistence/daos/movie_dao.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 class MovieModelImpl extends MovieModel {
-  final MovieDateAgent _dataAgent =
+  MovieDateAgent _dataAgent =
       RetrofitDataAgentImpl(); //MovieDateAgent as a dependency
 
   static final MovieModelImpl _singleton = MovieModelImpl._internal();
@@ -22,9 +25,18 @@ class MovieModelImpl extends MovieModel {
   MovieModelImpl._internal();
 
   // Daos
-  final MovieDao _movieDao = MovieDao();
-  final GenreDao _genreDao = GenreDao();
-  final ActorDao _actorDao = ActorDao();
+  MovieDao _movieDao = MovieDaoImpl();
+  GenreDao _genreDao = GenreDaoImpl();
+  ActorDao _actorDao = ActorDaoImpl();
+
+  /// For Testing Purpose
+  void setDaosAndDataAgents(MovieDao movieDao, ActorDao actorDao,
+      GenreDao genreDao, MovieDateAgent dateAgent) {
+    _dataAgent = dateAgent;
+    _movieDao = movieDao;
+    _actorDao = actorDao;
+    _genreDao = genreDao;
+  }
 
   @override
   void getNowPlayingMovies(int page) {
@@ -67,7 +79,7 @@ class MovieModelImpl extends MovieModel {
   }
 
   @override
-  Future<List<MovieVO>>? getMoviesByGenre(int genreId) {
+  Future<List<MovieVO>?> getMoviesByGenre(int genreId) {
     return _dataAgent.getMoviesByGenre(genreId).then((value) {
       return value ?? [];
     });

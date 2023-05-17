@@ -44,7 +44,8 @@ class ActorImageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.network("$IMAGE_BASE_URL$imageUrl", fit: BoxFit.cover);
+    // return Image.network("$IMAGE_BASE_URL$imageUrl", fit: BoxFit.cover);
+    return Text("image");
   }
 }
 

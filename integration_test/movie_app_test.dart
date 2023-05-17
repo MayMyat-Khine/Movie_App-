@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:movie_app_ui/data.vos/models/movie_model_impl.dart';
-import 'package:movie_app_ui/persistence/hive_constants.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:movie_app_ui/data.vos/vos/actor_vo.dart';
 import 'package:movie_app_ui/data.vos/vos/collections_vo.dart';
 import 'package:movie_app_ui/data.vos/vos/date_vo.dart';
@@ -9,14 +10,15 @@ import 'package:movie_app_ui/data.vos/vos/movie_vo.dart';
 import 'package:movie_app_ui/data.vos/vos/production_company_vo.dart';
 import 'package:movie_app_ui/data.vos/vos/production_country_vo.dart';
 import 'package:movie_app_ui/data.vos/vos/spoken_languages_vo.dart';
-import 'package:movie_app_ui/network/data_agents/retrofit_data_agent_impl.dart';
+import 'package:movie_app_ui/main.dart';
 import 'package:movie_app_ui/pages/home_page.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:hive/hive.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'package:movie_app_ui/persistence/hive_constants.dart';
+
+import 'test_data/test_data.dart';
 
 void main() async {
-  // RetrofitDataAgentImpl().getNowPlayingMovies(1);
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
   await Hive.initFlutter();
 
   Hive.registerAdapter(ActorVOAdapter());
@@ -32,21 +34,20 @@ void main() async {
   await Hive.openBox<GenreVO>(BOX_NAME_GENRE_VO);
   await Hive.openBox<MovieVO>(BOX_NAME_MOVIE_VO);
 
-  runApp(const MyApp());
-}
+  testWidgets("Tap Best Popular Movies and Navigate to its details",
+      (widgetTester) async {
+    await widgetTester.pumpWidget(MyApp());
+    await Future.delayed(Duration(seconds: 2));
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+    await widgetTester.pumpAndSettle(Duration(seconds: 15));
+    expect(find.byType(HomePage), findsOneWidget);
+    expect(find.text(TEST_DATA_MOVIE_NAME), findsOneWidget);
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: HomePage(),
-    );
-  }
+    await widgetTester.tap(find.text(TEST_DATA_MOVIE_NAME));
+    await widgetTester.pumpAndSettle(Duration(seconds: 15));
+
+    expect(find.text(TEST_DATA_MOVIE_NAME), findsOneWidget);
+    expect(find.text(TEST_DATA_RATING), findsOneWidget);
+    expect(find.text(TEST_DATA_RELEASED_YEAR), findsOneWidget);
+  });
 }

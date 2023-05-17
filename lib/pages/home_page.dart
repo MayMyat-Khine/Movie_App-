@@ -302,7 +302,8 @@ class _BannerSectionViewState extends State<BannerSectionView> {
                   _position = page.toDouble();
                 });
               },
-              children: widget.movieList?.getRange(0, 6).map((movie) {
+              children: widget.movieList?.map((movie) {
+                    //.getRange(0, 6)
                     return BannerView(
                       movie: movie,
                     );

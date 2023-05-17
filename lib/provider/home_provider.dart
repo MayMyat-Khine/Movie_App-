@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:movie_app_ui/data.vos/models/movie_model.dart';
 import 'package:movie_app_ui/data.vos/models/movie_model_impl.dart';
@@ -18,7 +17,11 @@ class HomeProvider extends ChangeNotifier {
   /// Model
   MovieModel movieModel = MovieModelImpl();
 
-  HomeProvider() {
+  HomeProvider([MovieModel? _movieModel]) {
+    if (_movieModel != null) {
+      movieModel = _movieModel;
+    }
+
     /// Popular Movies From Database
     movieModel.getPopularMoviesFromDatabase().listen((movieList) {
       popularMovies = movieList;
@@ -30,6 +33,9 @@ class HomeProvider extends ChangeNotifier {
     /// Now Playing Movies From Database
     movieModel.getNowPlayingMoviesFromDatabase().listen((movieList) {
       nowPlayingMovies = movieList;
+      if (nowPlayingMovies?.isNotEmpty ?? false) {
+        nowPlayingMovies?.sort((a, b) => a.id ?? 0 - (b.id ?? 0));
+      }
       notifyListeners();
     }).onError((error) {
       debugPrint(error.toString());
@@ -60,7 +66,9 @@ class HomeProvider extends ChangeNotifier {
       notifyListeners();
 
       /// Movies By Genre
-      getMoviesByGenre(genres?.first.id ?? 1);
+      if (genres?.isNotEmpty ?? false) {
+        getMoviesByGenre(genres?.first.id ?? 1);
+      }
     }).catchError((error) {
       debugPrint(error.toString());
     });
@@ -87,7 +95,7 @@ class HomeProvider extends ChangeNotifier {
   }
 
   void getMoviesByGenre(int genreId) {
-    movieModel.getMoviesByGenre(genreId)?.then((movieList) {
+    movieModel.getMoviesByGenre(genreId).then((movieList) {
       moviesByGenre = movieList;
       notifyListeners();
     }).catchError((error) {

@@ -9,7 +9,7 @@ abstract class MovieModel extends Model {
   void getPopularMovies(int page);
   void getTopRatedMovies(int page);
   Future<List<GenreVO>?> getGenres();
-  Future<List<MovieVO>>? getMoviesByGenre(int genreId);
+  Future<List<MovieVO>?> getMoviesByGenre(int genreId);
   Future<List<ActorVO>?> getActors(int page);
   Future<MovieVO>? getMovieDetails(int movieId);
   Future<List<List<ActorVO>?>> getCreditsByMovie(int movieId);

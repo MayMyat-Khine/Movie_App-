@@ -74,6 +74,8 @@ class BannerImageView extends StatelessWidget {
   BannerImageView({required this.bannerImageUrl});
   @override
   Widget build(BuildContext context) {
-    return Image.network("$IMAGE_BASE_URL$bannerImageUrl", fit: BoxFit.cover);
+    // return Image.network("$IMAGE_BASE_URL$bannerImageUrl", fit: BoxFit.cover);
+
+    return Text("data");
   }
 }
